@@ -202,30 +202,30 @@ function LpCustomHtml({ data }: any) {
   return <div dangerouslySetInnerHTML={{ __html: data.html_content }} />;
 }
 
-// ── MAPEAMENTO ──
+// ── MAPEAMENTO PAYLOAD CMS ──
 const componentMap: Record<string, any> = {
-  'lp.hero-section': LpHero,
-  'lp.problem-agitation': LpProblem,
-  'lp.benefits-grid': LpBenefits,
-  'lp.video-section': LpVideo,
-  'lp.vturb-section': LpVturb,
-  'lp.testimonials': LpTestimonials,
-  'lp.social-proof-numbers': LpSocialProof,
-  'lp.offer-stack': LpOfferStack,
-  'lp.guarantee': LpGuarantee,
-  'lp.urgency-cta': LpUrgencyCta,
-  'lp.faq-accordion': LpFaq,
-  'lp.media-logos': LpMediaLogos,
-  'lp.content-block': LpContent,
-  'lp.comparison-table': LpComparison,
-  'lp.custom-html': LpCustomHtml,
+  'hero': LpHero,
+  'problemAgitation': LpProblem,
+  'benefitsGrid': LpBenefits,
+  'videoSection': LpVideo,
+  'vturbSection': LpVturb,
+  'testimonials': LpTestimonials,
+  'socialProof': LpSocialProof,
+  'offerStack': LpOfferStack,
+  'guarantee': LpGuarantee,
+  'urgencyCta': LpUrgencyCta,
+  'faqAccordion': LpFaq,
+  'mediaLogos': LpMediaLogos,
+  'contentBlock': LpContent,
+  'comparisonTable': LpComparison,
+  'customHtml': LpCustomHtml,
 };
 
 // ── RENDERER ──
 interface DynamicZoneRendererProps {
-  sections: LpDynamicZone[];
-  product: Product;
-  landingPage: LandingPage;
+  sections: any[];
+  product: any;
+  landingPage: any;
 }
 
 export function DynamicZoneRenderer({ sections, product, landingPage }: DynamicZoneRendererProps) {
@@ -236,10 +236,12 @@ export function DynamicZoneRenderer({ sections, product, landingPage }: DynamicZ
   return (
     <>
       {sections.map((section, index) => {
-        const Component = componentMap[section.__component];
+        // No Strapi era __component, no Payload CMS é blockType
+        const blockName = section.blockType || section.__component;
+        const Component = componentMap[blockName];
 
         if (!Component) {
-          console.warn(`Component not found: ${section.__component}`);
+          console.warn(`Component not found: ${blockName}`);
           return null;
         }
 

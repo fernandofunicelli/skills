@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url'
 import { Users } from './payload/collections/Users'
 import { Products } from './payload/collections/Products'
 import { LandingPages } from './payload/collections/LandingPages'
+import { SeoPages } from './payload/collections/SeoPages'
+import { Media } from './payload/collections/Media'
 import { GlobalSeo } from './payload/globals/GlobalSeo'
 
 const filename = fileURLToPath(import.meta.url)
@@ -14,7 +16,7 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
     editor: lexicalEditor(),
-    collections: [Users, Products, LandingPages],
+    collections: [Users, Products, LandingPages, SeoPages, Media],
     globals: [GlobalSeo],
     secret: process.env.PAYLOAD_SECRET || 'sua-super-chave-secreta',
     db: postgresAdapter({

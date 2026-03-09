@@ -1,54 +1,29 @@
 // ============================================
-// STRAPI.TS - Fetch de dados do Strapi
+// DATA FETCHING - Payload CMS Local API
+// (Substitui o antigo strapi.ts mantendo os exports)
 // ============================================
 
-import {
-  Product,
-  SeoPage,
-  LandingPage,
-  GlobalSeo,
-  StrapiCollectionResponse,
-  StrapiSingleResponse,
-} from './types';
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 
-const STRAPI_URL = process.env.STRAPI_API_URL || 'http://localhost:1337/api';
-const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN;
+let cachedPayload: any = null;
 
-/**
- * Fetch genérico do Strapi com cache tags
- */
-async function fetchStrapi(endpoint: string, options: RequestInit = {}) {
-  const url = `${STRAPI_URL}${endpoint}`;
-
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(STRAPI_TOKEN && { Authorization: `Bearer ${STRAPI_TOKEN}` }),
-      ...options.headers,
-    },
-    next: {
-      tags: options.next?.tags || [endpoint],
-      revalidate: options.next?.revalidate ?? 3600, // 1 hora default
-    },
-    ...options,
-  });
-
-  if (!res.ok) {
-    throw new Error(`Strapi fetch error: ${res.status} ${res.statusText}`);
+async function getPayloadClient() {
+  if (!cachedPayload) {
+    cachedPayload = await getPayload({ config: configPromise });
   }
-
-  return res.json();
+  return cachedPayload;
 }
 
 // ── GLOBAL SEO ──
-
-export async function getGlobalSeo(): Promise<GlobalSeo | null> {
+export async function getGlobalSeo() {
   try {
-    const response: StrapiSingleResponse<GlobalSeo> = await fetchStrapi(
-      '/global-seo?populate=deep'
-    );
-    if (!response.data) return null;
-    return { id: response.data.id, ...response.data.attributes };
+    const payload = await getPayloadClient();
+    const result = await payload.findGlobal({
+      slug: 'global-seo',
+      depth: 1,
+    });
+    return result || null;
   } catch (error) {
     console.error('Error fetching GlobalSeo:', error);
     return null;
@@ -56,26 +31,35 @@ export async function getGlobalSeo(): Promise<GlobalSeo | null> {
 }
 
 // ── PRODUCTS ──
-
-export async function getProducts(): Promise<Product[]> {
+export async function getProducts() {
   try {
-    const response: StrapiCollectionResponse<Product> = await fetchStrapi(
-      '/products?populate=deep&filters[is_active][$eq]=true&sort=createdAt:desc'
-    );
-    return response.data.map((item) => ({ id: item.id, ...item.attributes }));
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: 'products',
+      where: {
+        is_active: { equals: true },
+      },
+      depth: 1,
+    });
+    return result.docs;
   } catch (error) {
     console.error('Error fetching products:', error);
     return [];
   }
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+export async function getProductBySlug(slug: string) {
   try {
-    const response: StrapiCollectionResponse<Product> = await fetchStrapi(
-      `/products?populate=deep&filters[slug][$eq]=${slug}&filters[is_active][$eq]=true`
-    );
-    if (response.data.length === 0) return null;
-    return { id: response.data[0].id, ...response.data[0].attributes };
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: 'products',
+      where: {
+        slug: { equals: slug },
+        is_active: { equals: true },
+      },
+      depth: 1,
+    });
+    return result.docs[0] || null;
   } catch (error) {
     console.error(`Error fetching product ${slug}:`, error);
     return null;
@@ -83,43 +67,55 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 // ── SEO PAGES ──
-
-export async function getSeoPages(): Promise<SeoPage[]> {
+export async function getSeoPages() {
   try {
-    const response: StrapiCollectionResponse<SeoPage> = await fetchStrapi(
-      '/seo-pages?populate=deep&filters[noindex][$eq]=false&sort=createdAt:desc'
-    );
-    return response.data.map((item) => ({ id: item.id, ...item.attributes }));
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: 'seo-pages',
+      depth: 1,
+    });
+    return result.docs;
   } catch (error) {
     console.error('Error fetching SEO pages:', error);
     return [];
   }
 }
 
-export async function getSeoPageBySlug(
-  slug: string,
-  productSlug?: string
-): Promise<SeoPage | null> {
+export async function getSeoPageBySlug(slug: string, productSlug?: string) {
   try {
-    let query = `/seo-pages?populate=deep&filters[slug][$eq]=${slug}`;
+    const payload = await getPayloadClient();
+    const whereClause: any = {
+      slug: { equals: slug }
+    };
+
+    // Adicionando cláusula condicional como era no Strapi
     if (productSlug) {
-      query += `&filters[product][slug][$eq]=${productSlug}`;
+      whereClause['product.slug'] = { equals: productSlug };
     }
-    const response: StrapiCollectionResponse<SeoPage> = await fetchStrapi(query);
-    if (response.data.length === 0) return null;
-    return { id: response.data[0].id, ...response.data[0].attributes };
+
+    const result = await payload.find({
+      collection: 'seo-pages',
+      where: whereClause,
+      depth: 2,
+    });
+    return result.docs[0] || null;
   } catch (error) {
     console.error(`Error fetching SEO page ${slug}:`, error);
     return null;
   }
 }
 
-export async function getSeoPagesByProduct(productSlug: string): Promise<SeoPage[]> {
+export async function getSeoPagesByProduct(productSlug: string) {
   try {
-    const response: StrapiCollectionResponse<SeoPage> = await fetchStrapi(
-      `/seo-pages?populate=deep&filters[product][slug][$eq]=${productSlug}&filters[noindex][$eq]=false&sort=createdAt:desc`
-    );
-    return response.data.map((item) => ({ id: item.id, ...item.attributes }));
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: 'seo-pages',
+      where: {
+        'product.slug': { equals: productSlug }
+      },
+      depth: 1,
+    });
+    return result.docs;
   } catch (error) {
     console.error(`Error fetching SEO pages for ${productSlug}:`, error);
     return [];
@@ -127,29 +123,31 @@ export async function getSeoPagesByProduct(productSlug: string): Promise<SeoPage
 }
 
 // ── LANDING PAGES ──
-
-export async function getLandingPages(): Promise<LandingPage[]> {
+export async function getLandingPages() {
   try {
-    const response: StrapiCollectionResponse<LandingPage> = await fetchStrapi(
-      '/landing-pages?populate=deep&sort=createdAt:desc'
-    );
-    return response.data.map((item) => ({ id: item.id, ...item.attributes }));
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: 'landing-pages',
+      depth: 1,
+    });
+    return result.docs;
   } catch (error) {
     console.error('Error fetching landing pages:', error);
     return [];
   }
 }
 
-export async function getLandingPageBySlug(slug: string): Promise<LandingPage | null> {
+export async function getLandingPageBySlug(slug: string) {
   try {
-    const response: StrapiCollectionResponse<LandingPage> = await fetchStrapi(
-      `/landing-pages?populate=deep&filters[slug][$eq]=${slug}`,
-      {
-        next: { revalidate: 0 }, // NO CACHE para LPs (cada visita é única)
-      }
-    );
-    if (response.data.length === 0) return null;
-    return { id: response.data[0].id, ...response.data[0].attributes };
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: 'landing-pages',
+      where: {
+        slug: { equals: slug }
+      },
+      depth: 2, // Precisamos de depth>1 para trazer os relacionamentos da Dynamic Zone e o Product
+    });
+    return result.docs[0] || null;
   } catch (error) {
     console.error(`Error fetching landing page ${slug}:`, error);
     return null;
@@ -157,32 +155,13 @@ export async function getLandingPageBySlug(slug: string): Promise<LandingPage | 
 }
 
 // ── HELPERS ──
-
-/**
- * Revalida cache de um path específico
- * Chamado pelo webhook do Strapi
- */
-export async function revalidatePath(path: string): Promise<void> {
-  try {
-    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-revalidate-secret': process.env.REVALIDATE_SECRET || '',
-      },
-      body: JSON.stringify({ path }),
-    });
-  } catch (error) {
-    console.error(`Error revalidating path ${path}:`, error);
+export function getStrapiImageUrl(image: any): string {
+  if (!image) return '';
+  if (typeof image === 'string') return image;
+  if (image.url) {
+    if (image.url.startsWith('http')) return image.url;
+    // Em Payload local API, o file system pode usar a URL absoluta ou relativa dependendo da configuração
+    return image.url;
   }
-}
-
-/**
- * Obtém URL completa da imagem do Strapi
- */
-export function getStrapiImageUrl(url?: string): string {
-  if (!url) return '';
-  if (url.startsWith('http')) return url;
-  const baseUrl = STRAPI_URL.replace('/api', '');
-  return `${baseUrl}${url}`;
+  return '';
 }
