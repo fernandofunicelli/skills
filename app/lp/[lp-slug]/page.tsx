@@ -4,7 +4,7 @@
 // ============================================
 
 import { notFound } from 'next/navigation';
-import { getLandingPageBySlug, getProductBySlug } from '@/lib/strapi';
+import { getLandingPageBySlug, getProductBySlug } from '@/lib/payload';
 import { DynamicZoneRenderer } from '@/components/lp/DynamicZoneRenderer';
 import { DataLayerInit } from '@/components/tracking/DataLayerInit';
 import { PixelScripts } from '@/components/tracking/PixelScripts';

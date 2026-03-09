@@ -4,7 +4,7 @@
 // ============================================
 
 import { notFound } from 'next/navigation';
-import { getSeoPageBySlug, getSeoPages } from '@/lib/strapi';
+import { getSeoPageBySlug, getSeoPages } from '@/lib/payload';
 import { Container } from '@/components/ui/Container';
 import { DataLayerInit } from '@/components/tracking/DataLayerInit';
 import { Metadata } from 'next';

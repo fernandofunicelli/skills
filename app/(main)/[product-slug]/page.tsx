@@ -4,7 +4,7 @@
 // ============================================
 
 import { notFound } from 'next/navigation';
-import { getProductBySlug, getProducts } from '@/lib/strapi';
+import { getProductBySlug, getProducts } from '@/lib/payload';
 import { Container } from '@/components/ui/Container';
 import { DataLayerInit } from '@/components/tracking/DataLayerInit';
 import { Metadata } from 'next';
