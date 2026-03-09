@@ -1,0 +1,15 @@
+name: Deploy to Easypanel
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Easypanel Webhook
+        run: |
+          curl -X GET "http://72.60.69.153:3000/api/box/deploy/4617980355f65a25c82e"
