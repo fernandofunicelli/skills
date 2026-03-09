@@ -6,6 +6,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        primary: {
+          DEFAULT: '#e8192c',
+        },
+        'background-light': '#f8f5f6',
+        'background-dark': '#0a0a0a',
         brand: {
           50: '#fef2f2',
           100: '#fee2e2',
