@@ -155,13 +155,3 @@ export async function getLandingPageBySlug(slug: string) {
 }
 
 // ── HELPERS ──
-export function getStrapiImageUrl(image: any): string {
-  if (!image) return '';
-  if (typeof image === 'string') return image;
-  if (image.url) {
-    if (image.url.startsWith('http')) return image.url;
-    // Em Payload local API, o file system pode usar a URL absoluta ou relativa dependendo da configuração
-    return image.url;
-  }
-  return '';
-}

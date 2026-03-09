@@ -247,3 +247,16 @@ export function formatNumber(num: number, locale: string = 'pt-BR'): string {
 export function calculateDiscount(original: number, current: number): number {
   return Math.round(((original - current) / original) * 100);
 }
+
+/**
+ * Obtém URL completa da imagem do Strapi (agora Payload genérico)
+ */
+export function getStrapiImageUrl(image: any): string {
+  if (!image) return '';
+  if (typeof image === 'string') return image;
+  if (image.url) {
+    if (image.url.startsWith('http')) return image.url;
+    return image.url;
+  }
+  return '';
+}

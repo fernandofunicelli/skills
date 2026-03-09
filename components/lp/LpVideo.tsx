@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { Play } from 'lucide-react';
 import Image from 'next/image';
 import { LpVideoSection, Product, LandingPage } from '@/lib/types';
-import { getStrapiImageUrl } from '@/lib/strapi';
+import { getStrapiImageUrl } from '@/lib/utils';
 
 interface LpVideoProps {
     data: LpVideoSection;

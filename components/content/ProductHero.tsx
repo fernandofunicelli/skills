@@ -2,7 +2,7 @@ import { Product } from '@/lib/types';
 import { Container } from '@/components/ui/Container';
 import Button from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { getStrapiImageUrl } from '@/lib/strapi';
+import { getStrapiImageUrl } from '@/lib/utils';
 import Image from 'next/image';
 
 interface ProductHeroProps {

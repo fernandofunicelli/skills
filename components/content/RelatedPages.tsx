@@ -1,7 +1,7 @@
 import { SeoPage } from '@/lib/types';
 import { Container } from '@/components/ui/Container';
 import Link from 'next/link';
-import { getStrapiImageUrl } from '@/lib/strapi';
+import { getStrapiImageUrl } from '@/lib/utils';
 import Image from 'next/image';
 
 interface RelatedPagesProps {
@@ -27,8 +27,8 @@ export function RelatedPages({
             const url = basePath
               ? `${basePath}/${page.slug}`
               : page.product
-              ? `/${page.product.slug}/${page.slug}`
-              : `/blog/${page.slug}`;
+                ? `/${page.product.slug}/${page.slug}`
+                : `/blog/${page.slug}`;
 
             return (
               <Link

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { LpMediaLogos as LpMediaLogosType } from '@/lib/types';
-import { getStrapiImageUrl } from '@/lib/strapi';
+import { getStrapiImageUrl } from '@/lib/utils';
 
 interface LpMediaLogosProps { data: LpMediaLogosType; }
 

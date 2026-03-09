@@ -2,7 +2,7 @@ import { Testimonial } from '@/lib/types';
 import { Container } from '@/components/ui/Container';
 import { RatingStars } from '@/components/ui/RatingStars';
 import { Badge } from '@/components/ui/Badge';
-import { getStrapiImageUrl } from '@/lib/strapi';
+import { getStrapiImageUrl } from '@/lib/utils';
 import Image from 'next/image';
 
 interface TestimonialGridProps {
@@ -22,9 +22,8 @@ export function TestimonialGrid({
         <h2 className="text-h2 font-heading text-center mb-12">{headline}</h2>
 
         <div
-          className={`grid gap-6 ${
-            columns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'
-          }`}
+          className={`grid gap-6 ${columns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'
+            }`}
         >
           {testimonials.map((testimonial) => (
             <div

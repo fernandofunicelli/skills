@@ -6,7 +6,7 @@ import { Container } from '@/components/ui/Container';
 import { Badge } from '@/components/ui/Badge';
 import { CtaButton } from './CtaButton';
 import { VideoEmbed } from '@/components/ui/VideoEmbed';
-import { getStrapiImageUrl } from '@/lib/strapi';
+import { getStrapiImageUrl } from '@/lib/utils';
 import Image from 'next/image';
 
 interface LpHeroProps {

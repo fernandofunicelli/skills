@@ -24,8 +24,8 @@ export async function generateStaticParams() {
   const seoPages = await getSeoPages();
 
   return seoPages
-    .filter((page) => page.product?.slug)
-    .map((page) => ({
+    .filter((page: any) => page.product?.slug)
+    .map((page: any) => ({
       'product-slug': page.product!.slug,
       'page-slug': page.slug,
     }));
@@ -90,7 +90,7 @@ export default async function SeoSubPage({ params }: SeoSubPageProps) {
             <Container>
               <h2 className="text-h2 font-heading mb-8">Leia também</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {seoPage.related_pages.map((relatedPage) => (
+                {seoPage.related_pages.map((relatedPage: any) => (
                   <a
                     key={relatedPage.id}
                     href={`/${params['product-slug']}/${relatedPage.slug}`}
