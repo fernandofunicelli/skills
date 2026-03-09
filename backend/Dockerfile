@@ -45,7 +45,4 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=1337
 
-HEALTHCHECK --interval=30s --timeout=15s --start-period=120s --retries=5 \
-  CMD wget -q --spider http://localhost:1337/_health || exit 1
-
 CMD ["npm", "run", "start"]
