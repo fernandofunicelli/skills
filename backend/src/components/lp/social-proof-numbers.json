@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_lp_social_proof_numbers",
+  "info": {
+    "displayName": "LP Social Proof Numbers",
+    "description": "Números de impacto e métricas de prova social",
+    "icon": "trending-up"
+  },
+  "options": {},
+  "attributes": {
+    "headline": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "metrics": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.social-proof",
+      "required": true
+    },
+    "bg_style": {
+      "type": "enumeration",
+      "enum": ["dark", "brand", "light"],
+      "default": "dark",
+      "required": true
+    },
+    "cta_text": {
+      "type": "string",
+      "maxLength": 100
+    }
+  }
+}

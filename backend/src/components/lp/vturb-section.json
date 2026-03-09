@@ -1,0 +1,59 @@
+{
+    "collectionName": "components_lp_vturb_sections",
+    "info": {
+        "displayName": "Vturb Player",
+        "description": "Player de vídeo Vturb SmartPlayer com delay code, tracking e UTM injection",
+        "icon": "play"
+    },
+    "options": {},
+    "attributes": {
+        "headline": {
+            "type": "string",
+            "maxLength": 200
+        },
+        "sub_headline": {
+            "type": "text",
+            "maxLength": 400
+        },
+        "publisher_id": {
+            "type": "string",
+            "required": true,
+            "maxLength": 100,
+            "description": "Publisher ID do Vturb (ex: 12ad2d53-6275-484d-a818-c6c5c23f6c5f)"
+        },
+        "video_id": {
+            "type": "string",
+            "required": true,
+            "maxLength": 100,
+            "description": "Video ID do Vturb (ex: scr_657afe5a6ab1740009719845)"
+        },
+        "delay_seconds": {
+            "type": "integer",
+            "default": 0,
+            "min": 0,
+            "description": "Segundos no vídeo para exibir elementos .vturb-delayed (0 = desabilitado). Ex: 22m47s = 1367"
+        },
+        "max_width": {
+            "type": "integer",
+            "default": 800,
+            "min": 400,
+            "max": 1200,
+            "description": "Largura máxima do player em pixels"
+        },
+        "bg_dark": {
+            "type": "boolean",
+            "default": false
+        },
+        "tracking_milestone_pct": {
+            "type": "integer",
+            "default": 75,
+            "min": 1,
+            "max": 99,
+            "description": "% do vídeo para disparar evento vturb_milestone no DataLayer"
+        },
+        "cta_text": {
+            "type": "string",
+            "maxLength": 200
+        }
+    }
+}

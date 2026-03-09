@@ -1,0 +1,151 @@
+{
+  "kind": "collectionType",
+  "collectionName": "landing_pages",
+  "info": {
+    "singularName": "landing-page",
+    "pluralName": "landing-pages",
+    "displayName": "Landing Page",
+    "description": "Landing Pages de alta conversão com filtro e tracking"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "landing_pages"
+    },
+    "body_sections": {
+      "type": "dynamiczone",
+      "components": [
+        "lp.hero-section",
+        "lp.problem-agitation",
+        "lp.benefits-grid",
+        "lp.video-section",
+        "lp.vturb-section",
+        "lp.testimonials",
+        "lp.social-proof-numbers",
+        "lp.offer-stack",
+        "lp.guarantee",
+        "lp.urgency-cta",
+        "lp.faq-accordion",
+        "lp.media-logos",
+        "lp.content-block",
+        "lp.comparison-table",
+        "lp.custom-html"
+      ]
+    },
+    "meta_title": {
+      "type": "string",
+      "maxLength": 70
+    },
+    "meta_description": {
+      "type": "text",
+      "maxLength": 160
+    },
+    "theme_override": {
+      "type": "json"
+    },
+    "exit_popup_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "exit_popup_headline": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "exit_popup_offer": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "filter_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "filter_access_code": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "filter_access_param": {
+      "type": "string",
+      "maxLength": 50,
+      "default": "xyz"
+    },
+    "filter_required_sources": {
+      "type": "json"
+    },
+    "filter_required_params": {
+      "type": "json"
+    },
+    "filter_allowed_countries": {
+      "type": "json"
+    },
+    "filter_blocked_countries": {
+      "type": "json"
+    },
+    "filter_block_bots": {
+      "type": "boolean",
+      "default": true
+    },
+    "filter_block_empty_ua": {
+      "type": "boolean",
+      "default": true
+    },
+    "filter_block_direct": {
+      "type": "boolean",
+      "default": false
+    },
+    "filter_redirect_url": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "filter_safe_page_slug": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "tracking_google_ads_conversion_id": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tracking_google_ads_conversion_label": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tracking_google_ads_conversion_value": {
+      "type": "decimal",
+      "min": 0
+    },
+    "tracking_meta_pixel_id": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tracking_meta_custom_event": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tracking_taboola_pixel_id": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tracking_taboola_event_name": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tracking_custom_scripts": {
+      "type": "text"
+    }
+  }
+}

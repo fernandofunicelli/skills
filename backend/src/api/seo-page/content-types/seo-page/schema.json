@@ -1,0 +1,101 @@
+{
+  "kind": "collectionType",
+  "collectionName": "seo_pages",
+  "info": {
+    "singularName": "seo-page",
+    "pluralName": "seo-pages",
+    "displayName": "SEO Page",
+    "description": "Páginas de conteúdo SEO para cada produto"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "h1": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "product": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "seo_pages"
+    },
+    "page_type": {
+      "type": "enumeration",
+      "enum": ["product-main", "product-sub", "blog", "guide", "comparison"],
+      "default": "product-sub",
+      "required": true
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    },
+    "excerpt": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "featured_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "meta_title": {
+      "type": "string",
+      "maxLength": 70
+    },
+    "meta_description": {
+      "type": "text",
+      "maxLength": 160
+    },
+    "keywords": {
+      "type": "text",
+      "maxLength": 300
+    },
+    "canonical_url": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "noindex": {
+      "type": "boolean",
+      "default": false
+    },
+    "schema_markup": {
+      "type": "json"
+    },
+    "show_toc": {
+      "type": "boolean",
+      "default": false
+    },
+    "show_faq": {
+      "type": "boolean",
+      "default": false
+    },
+    "show_testimonials": {
+      "type": "boolean",
+      "default": false
+    },
+    "related_pages": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::seo-page.seo-page"
+    },
+    "publishedAt": {
+      "type": "datetime"
+    },
+    "updatedAt": {
+      "type": "datetime"
+    }
+  }
+}

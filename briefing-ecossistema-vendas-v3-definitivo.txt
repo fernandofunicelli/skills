@@ -1,0 +1,1244 @@
+﻿Briefing V3 — Ecossistema de Vendas
+
+
+BRIEFING TÉCNICO DEFINITIVO V3
+Ecossistema de Vendas de Alta Conversão
+Strapi + Next.js + Tailwind + Tracking Completo + Checkout Externo
+
+
+Documento para execução autônoma via Claude Code
+Versão 3.0 — Fevereiro 2026
+
+
+MUDANCAS VS V2
+• Arquitetura LP de alta conversão (conteúdo + design)• Tracking completo: Google Ads + Meta Pixel + Taboola + eventos de conversão• Filtro de tráfego avançado com códigos de acesso, origem, país, parâmetros• Multi-produto com checkout e filtro configuráveis por LP• SEO code-level: componentes semânticos, Core Web Vitals, schema automático• Pastas com nomes humanos (sem /seo/)
+________________
+
+
+ÍNDICE
+
+
+
+
+________________
+
+
+1. CONTEXTO GERAL E REGRAS DO PROJETO
+
+
+Este documento é a referência única e definitiva. O agente Claude Code constrói tudo: backend Strapi, frontend Next.js, design system, tracking, filtro. O usuário depois insere conteúdo final (textos, imagens) no Strapi e ajusta cores no tailwind.config.ts.
+
+
+1.1 Stack
+Camada
+	Tecnologia
+	Justificativa
+	CMS
+	Strapi v5 (TS, PostgreSQL)
+	Headless, API REST, Dynamic Zones
+	Frontend
+	Next.js 14+ (App Router, TS)
+	SSG/ISR p/ SEO, SSR p/ LPs, middleware Edge
+	Estilos
+	Tailwind CSS 3.4+ + plugins
+	Utility-first, tree-shake, tokens via config
+	UI
+	Headless UI + Framer Motion
+	Acessibilidade, animações GPU-accelerated
+	Imagens
+	next/image + Strapi Media
+	WebP/AVIF auto, lazy, blur placeholder
+	Fonts
+	next/font/google
+	Self-hosted, zero CLS
+	Filtro
+	Middleware Edge + config por LP
+	Código acesso, origem, país, bots
+	Tracking
+	GTM + GA4 + Google Ads + Meta Pixel + Taboola
+	Eventos de conversão completos
+	Checkout
+	Externo (config por produto)
+	UTMs + click IDs preservados
+	Deploy
+	Vercel + Railway/Render
+	Edge network, preview deploys
+	
+
+1.2 Regras Fundamentais
+* Multi-produto: O sistema suporta N produtos. Cada produto tem suas próprias SEO pages, LPs, checkout URL e configurações de filtro.
+* LP é vendedora: LPs existem para CONVERTER. Cada componente é otimizado para venda: copy persuasiva, escassez, prova social, CTAs múltiplos, zero distrações.
+* Filtro por LP: Cada LP pode ter seu próprio filtro (código de acesso, origem obrigatória, países permitidos) OU herdar um filtro genérico do produto.
+* Checkout por produto: Cada Product tem seu checkout_base_url. Diferentes LPs do mesmo produto vão para o mesmo checkout, mas com UTMs distintos.
+* Tracking completo: Google Ads (gtag conversion), Meta Pixel (fbq), Taboola Pixel, GA4 — todos com eventos de conversão configurados por LP.
+* SEO no código: Componentes semânticos (article, nav, section, aside, main), schema automático, Core Web Vitals excelentes.
+* Sem /seo/ na URL: URLs humanizadas: /produto-slug, /produto-slug/artigo-slug, /blog/artigo-slug.
+________________
+
+
+2. DESIGN SYSTEM (TAILWIND CONFIG)
+
+
+Todo o design visual é controlado por tokens no tailwind.config.ts. Mudar marca = mudar tokens. O agente implementa com cores placeholder que podem ser trocadas depois.
+
+
+2.1 tailwind.config.ts Completo
+
+
+// tailwind.config.ts
+import type { Config } from 'tailwindcss';
+const config: Config = {
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
+  theme: { extend: {
+    colors: {
+      brand: {
+        50: '#F0F4FF', 100: '#E0E8FF', 200: '#C2D1FF',
+        300: '#93AAFD', 400: '#6882F5', 500: '#4F63E8',
+        600: '#3D4FD1', 700: '#2E3BA8', 800: '#1E2878',
+        900: '#141A52', 950: '#0A0D30',
+      },
+      accent: { 400: '#FBBF24', 500: '#F59E0B', 600: '#D97706' },
+      success: { 500: '#22C55E', 600: '#16A34A' },
+      danger: { 500: '#EF4444', 600: '#DC2626' },
+      surface: {
+        0: '#FFFFFF', 50: '#F9FAFB', 100: '#F3F4F6',
+        200: '#E5E7EB', 800: '#1F2937', 900: '#111827',
+      },
+    },
+    fontFamily: {
+      sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+      heading: ['var(--font-plus-jakarta)', 'var(--font-inter)', 'sans-serif'],
+    },
+    fontSize: {
+      'display': ['clamp(2.5rem,5vw,4rem)', { lineHeight:'1.1', letterSpacing:'-0.02em' }],
+      'h1': ['clamp(2rem,4vw,3rem)', { lineHeight:'1.15', letterSpacing:'-0.02em' }],
+      'h2': ['clamp(1.5rem,3vw,2.25rem)', { lineHeight:'1.2' }],
+      'h3': ['clamp(1.25rem,2vw,1.75rem)', { lineHeight:'1.3' }],
+      'body-lg': ['1.125rem', { lineHeight:'1.7' }],
+      'body': ['1rem', { lineHeight:'1.7' }],
+      'body-sm': ['0.875rem', { lineHeight:'1.6' }],
+    },
+    spacing: {
+      'section': 'clamp(4rem,8vw,8rem)',
+      'section-sm': 'clamp(2rem,4vw,4rem)',
+    },
+    maxWidth: { 'content': '72rem', 'narrow': '48rem', 'wide': '84rem' },
+    borderRadius: { 'card': '0.75rem', 'button': '0.5rem', 'badge': '9999px' },
+    boxShadow: {
+      'card': '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+      'card-hover': '0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.05)',
+      'cta': '0 4px 14px rgba(79,99,232,0.4)',
+      'cta-hover': '0 6px 20px rgba(79,99,232,0.5)',
+      'floating': '0 20px 40px rgba(0,0,0,0.15)',
+    },
+    animation: {
+      'fade-in': 'fadeIn 0.5s ease-out',
+      'slide-up': 'slideUp 0.5s ease-out',
+      'pulse-cta': 'pulseCta 2s ease-in-out infinite',
+    },
+    keyframes: {
+      fadeIn: { '0%': { opacity:'0' }, '100%': { opacity:'1' } },
+      slideUp: { '0%': { opacity:'0', transform:'translateY(20px)' }, '100%': { opacity:'1', transform:'translateY(0)' } },
+      pulseCta: { '0%,100%': { transform:'scale(1)' }, '50%': { transform:'scale(1.04)' } },
+    },
+  }},
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
+};
+export default config;
+
+
+2.2 Fonts e CSS Global
+Inter (body) + Plus Jakarta Sans (headings) via next/font. globals.css com prose-strapi para rich text do Strapi, container helpers, scroll suave com prefers-reduced-motion, ::selection com cor da marca. Tudo igual ao V2 seção 2.2 e 2.3.
+________________
+
+
+3. LANDING PAGES DE ALTA CONVERSÃO
+
+
+⚠️ ESTA É A SEÇÃO MAIS CRÍTICA DO BRIEFING. LPs existem para VENDER. Cada pixel, cada palavra, cada componente deve servir à conversão.
+
+
+3.1 Filosofia de Design da LP
+Uma LP de alta conversão segue princípios ps icológicos de persuasão. O design e o conteúdo trabalham juntos:
+
+
+* Zero distrações: Sem navbar de navegação, sem links para fora (exceto checkout), sem sidebar, sem footer com links. O visitante tem UM caminho: COMPRAR.
+* CTA em todo scroll: O visitante NUNCA deve estar a mais de 1 viewport de distância de um botão de compra. CTAs no hero, após benefícios, após depoimentos, após preço, floating no mobile.
+* Prova social constante: Números ('10.000+ alunos'), depoimentos com fotos reais, badges de avaliação, logos de mídia ('visto em'), contadores.
+* Urgência e escassez: Countdown timers, barras de progresso ('87% das vagas preenchidas'), textos de urgência, badges 'Oferta limitada'.
+* Visual hierarchy clara: Headlines grandes e impactantes, sub-headlines de suporte, body legível. Contraste forte entre CTA e background.
+* Mobile-first radical: 70%+ do tráfego pago é mobile. CTA full-width, floating CTA fixo no bottom, textos mais curtos, stacking vertical otimizado.
+
+
+3.2 Estrutura de Conteúdo da LP (Ordem de Seções)
+A ordem abaixo segue a psicologia de venda: atrair → despertar desejo → construir confiança → converter. Cada seção abaixo é um componente da Dynamic Zone no Strapi:
+
+
+Bloco 1: Hero (acima do fold)
+Objetivo: capturar atenção nos primeiros 3 segundos
+* Badge de urgência: Ex: '🔥 Oferta válida só hoje' — bg-accent-400 text-surface-900 rounded-badge px-4 py-1
+* Headline principal: text-display font-heading. A promessa principal. Máx 10 palavras. Ex: 'Domine Marketing Digital e Fature de Casa'
+* Sub-headline: text-h3 text-surface-200. Expande a promessa. Máx 2 linhas. Ex: 'O método completo que já transformou a carreira de 10.000+ alunos'
+* Imagem/Vídeo hero: Imagem do produto ou vídeo VSL com facade pattern (thumbnail > play). aspect-video rounded-card shadow-floating
+* CTA primário: <Button variant='primary' size='xl' pulse /> — texto de ação: 'QUERO COMEÇAR AGORA', 'GARANTIR MINHA VAGA'
+* Trust strip: Linha com 3-4 badges: '✅ Garantia 30 dias', '⭐ 4.9/5 avaliação', '💻 Acesso imediato', '🔒 Compra segura'
+
+
+Bloco 2: Problema e Agitação
+Objetivo: fazer o visitante se identificar com a dor
+* Headline: text-h2. Ex: 'Você já sentiu isso?'
+* Lista de dores: 4-6 bullet points com ícones ❌. Cada um descreve uma frustração que o produto resolve. Background bg-danger-500/5 border-l-4 border-danger-500 para destaque.
+* Transição: Parágrafo curto que conecta a dor à solução. 'E se existisse um caminho comprovado para mudar isso?'
+
+
+Bloco 3: Solução e Benefícios
+Objetivo: mostrar que o produto é a resposta
+* Headline: text-h2. Ex: 'Conheça o [Nome do Produto]'
+* Grid de benefícios: 3-6 cards com ícone Lucide + título bold + descrição. Grid responsivo: 1 col mobile, 2 tablet, 3 desktop. Animação stagger slide-up via Framer Motion.
+* CTA secundário: Repetição do CTA após benefícios.
+
+
+Bloco 4: Vídeo de Venda (VSL)
+Objetivo: aprofundar o desejo
+* Facade pattern: Thumbnail estática com botão play no centro. ZERO JavaScript/iframe até o clique. Isso preserva LCP.
+* Após vídeo: CTA imediato abaixo do player.
+
+
+Bloco 5: Depoimentos e Prova Social
+Objetivo: construir confiança via social proof
+* Carousel de depoimentos: CSS scroll-snap nativo (NUNCA lib pesada). Cada card: foto circular, nome, profissão, estrelas, texto. Badge '✅ Compra verificada'.
+* Números de impacto: Grid 3-4 colunas com métricas grandes: '10.000+' text-display font-bold text-brand-500, abaixo 'alunos formados' text-body-sm. Background bg-brand-950 text-white para contraste.
+* Logos 'Visto em': Faixa com logos de mídia em grayscale com hover color. opacity-60 hover:opacity-100.
+
+
+Bloco 6: O Que Você Vai Receber (Oferta)
+Objetivo: empilhar valor percebido
+* Stack de valor: Lista de itens incluídos, cada um com nome + valor individual. 'Módulo 1: Fundamentos (valor: R$ 297)'. Check verde ✓ ao lado de cada item.
+* Total do valor: Soma visual: 'Valor total: R$ 2.385' em text-h3 line-through text-surface-400.
+* Preço real: 'Hoje por apenas: R$ 197' em text-display text-brand-500 font-bold.
+* Parcelamento: 'ou 12x de R$ 19,70' em text-body-lg.
+
+
+Bloco 7: Garantia
+Objetivo: remover risco da decisão
+* Card de garantia: Ícone de escudo grande. 'Garantia incondicional de 30 dias. Se você não ficar satisfeito, devolvemos 100% do seu dinheiro. Sem perguntas.' Border-2 border-success-500 bg-success-500/5.
+
+
+Bloco 8: CTA Final + Urgência
+Objetivo: último empurrão para conversão
+* Countdown timer: Evergreen (reinicia por sessão/cookie) OU data fixa. text-display digits, bg-brand-950.
+* Barra de escassez: 'Restam apenas 37 vagas' com ProgressBar animada.
+* CTA final: Maior CTA da página. <Button variant='urgency' size='xl' pulse fullWidth />. Background bg-brand-950 com CTA em vermelho/laranja para contraste máximo.
+
+
+Bloco 9: FAQ
+Objetivo: matar objeções finais
+* Accordion: Headless UI Disclosure. 6-10 perguntas focadas em objeções de compra: 'Funciona mesmo?', 'E se eu não gostar?', 'Serve para iniciantes?'. SEM schema FAQPage (página é noindex).
+
+
+Bloco 10: Footer Mínimo
+Apenas: nome da empresa, CNPJ, links de Termos de Uso e Política de Privacidade. ZERO links de navegação. ZERO links para SEO pages.
+________________
+
+
+3.3 Header da LP
+A LP tem um header DIFERENTE do site principal:
+
+
+* Sem navegação: Não tem menu, não tem links. Apenas logo (sem link para home) ou nenhum logo.
+* Barra de urgência (opcional): Faixa fina no topo: bg-accent-500 text-surface-900 text-body-sm font-bold text-center py-2. Ex: '🔥 OFERTA ESPECIAL: 50% OFF termina em 2h 14min'
+* Sticky social proof (opcional): Ao scrollar, aparece barra fixa com: logo + 'Mais de 10.000 alunos' + mini CTA
+
+
+3.4 Footer da LP
+Footer COMPLETAMENTE diferente do site:
+
+
+* Conteúdo: Apenas: Nome empresa | CNPJ | Termos de Uso | Política de Privacidade | Suporte
+* Visual: bg-surface-900 text-surface-400 text-caption py-4. Minimalista.
+* ZERO links para páginas SEO ou home: O visitante não tem para onde ir, só comprar.
+
+
+3.5 Mobile: FloatingCta
+Botão fixo no bottom da tela em mobile (lg:hidden). Aparece após scroll de 30vh. Classes: fixed bottom-0 inset-x-0 p-4 bg-surface-0/95 backdrop-blur shadow-floating z-40 safe-area-inset-bottom. Botão full-width com texto do CTA e preço.
+
+
+3.6 Exit Intent Popup
+Popup que aparece quando o mouse sai da viewport (desktop) ou após 30s sem clique no CTA (mobile). Configurado por LP no Strapi (exit_popup_enabled). Contém: headline de retenção, oferta especial ou desconto, CTA, botão 'Não obrigado' que fecha. Mostra 1x por sessão.
+________________
+
+
+3.7 Dynamic Zone — Componentes LP no Strapi
+Cada bloco da LP é um componente na Dynamic Zone body_sections da LandingPage:
+
+
+Componente Strapi
+	React Component
+	Campos no Strapi
+	lp.hero-section
+	LpHero
+	badge_text, headline, sub_headline, hero_image (Media), hero_video_url, cta_text, trust_items (Repeatable: icon Enum, text)
+	lp.problem-agitation
+	LpProblem
+	headline, pain_points (Repeatable: icon, text), transition_text
+	lp.benefits-grid
+	LpBenefits
+	headline, sub_headline, items (Rep: icon Enum Lucide, title, description), cta_text
+	lp.video-section
+	LpVideo
+	headline, video_url, thumbnail (Media), description, cta_text
+	lp.testimonials
+	LpTestimonials
+	headline, style (Enum: carousel, grid, stack), items (Rep: author_name, author_photo, content, rating, badge_text)
+	lp.social-proof-numbers
+	LpSocialProof
+	headline, metrics (Rep: value, label, icon Enum), bg_style (Enum: dark, brand, light)
+	lp.offer-stack
+	LpOfferStack
+	headline, items (Rep: name, value_label), total_value, actual_price, installment_text, cta_text
+	lp.guarantee
+	LpGuarantee
+	headline, body, days (Integer), icon_style (Enum: shield, badge, stamp)
+	lp.urgency-cta
+	LpUrgencyCta
+	headline, countdown_end (DateTime), countdown_type (Enum: fixed, evergreen), scarcity_text, scarcity_pct (Int), cta_text, cta_variant (Enum: primary, urgency)
+	lp.faq-accordion
+	LpFaq
+	headline, items (Rep: question, answer)
+	lp.media-logos
+	LpMediaLogos
+	headline, logos (Media Multiple)
+	lp.content-block
+	LpContent
+	headline, body (Rich Text), alignment (Enum: left, center)
+	lp.comparison-table
+	LpComparison
+	headline, columns (JSON), rows (JSON)
+	lp.custom-html
+	LpCustomHtml
+	html_content (Text Long) — para embeds específicos
+	
+
+⚠️ CADA componente LP DEVE ter um campo 'cta_text' opcional. Se preenchido, renderiza um CTA abaixo da seção. Isso garante CTAs em todo scroll.
+
+
+3.8 DynamicZoneRenderer
+// components/lp/DynamicZoneRenderer.tsx
+// Mapeia __component string para React component
+// Alterna background entre white/light a cada seção
+// Se o componente Strapi tiver cta_text preenchido,
+//   renderiza <CtaButton> DENTRO do SectionWrapper
+// O renderer também recebe o product e landingPage como context
+//   para que cada CTA tenha os UTMs corretos
+________________
+
+
+4. FILTRO DE TRÁFEGO AVANÇADO
+
+
+O filtro é a camada de segurança que protege as LPs. Cada LP pode ter configurações próprias de filtro. O filtro é configurável por LP via campos no Strapi.
+
+
+4.1 Campos de Filtro no Strapi (LandingPage)
+Campo
+	Tipo
+	Descrição
+	filter_enabled
+	Boolean
+	Liga/desliga o filtro para esta LP
+	filter_access_code
+	Text (Short)
+	Código único de acesso. Ex: 'abc123'. A URL deve ter ?xyz=abc123 para acessar. Se vazio, não exige código.
+	filter_access_param
+	Text (Short)
+	Nome do parâmetro de URL que carrega o código. Default: 'xyz'. Ex: ?xyz=abc123
+	filter_required_sources
+	JSON
+	Array de origens obrigatórias. Ex: ['taboola', 'google', 'facebook']. Valida contra utm_source da URL.
+	filter_required_params
+	JSON
+	Parâmetros de URL obrigatórios para acessar. Ex: ['tblci', 'gclid']. Se algum faltar, bloqueia.
+	filter_allowed_countries
+	JSON
+	Array de códigos ISO de países permitidos. Ex: ['BR', 'PT']. Vazio = todos permitidos.
+	filter_blocked_countries
+	JSON
+	Países bloqueados. Ex: ['CN', 'RU']. Verificado via header CF-IPCountry ou geo lookup.
+	filter_block_bots
+	Boolean
+	Bloqueia bots conhecidos (default: true)
+	filter_block_empty_ua
+	Boolean
+	Bloqueia user-agents vazios ou muito curtos (default: true)
+	filter_block_direct
+	Boolean
+	Bloqueia acesso direto (sem referer e sem parâmetros). Default: false.
+	filter_redirect_url
+	Text (Short)
+	URL para redirecionar tráfego bloqueado. Se vazio, redireciona para /blocked.
+	filter_safe_page_slug
+	Text (Short)
+	Slug de uma página 'segura' genérica do produto para redirect. Ex: 'produto-a-info'. Configurável por produto.
+	
+
+4.2 Middleware Completo (Edge Runtime)
+// middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+
+// Cache das configs de filtro das LPs (refreshed via ISR)
+// Em produção, usar Redis/KV Store na edge
+
+
+export async function middleware(request: NextRequest) {
+  if (!request.nextUrl.pathname.startsWith('/lp/')) {
+    return NextResponse.next();
+  }
+
+
+  // Extrair slug da LP
+  const slug = request.nextUrl.pathname.replace('/lp/', '').replace(/\/$/,'');
+
+
+  // Buscar configuração de filtro da LP do Strapi (cached)
+  const filterConfig = await getFilterConfig(slug);
+  if (!filterConfig || !filterConfig.filter_enabled) {
+    return addSecurityHeaders(NextResponse.next());
+  }
+
+
+  const ua = request.headers.get('user-agent') || '';
+  const params = request.nextUrl.searchParams;
+  const country = request.headers.get('cf-ipcountry')
+    || request.geo?.country || '';
+
+
+  // ── CHECK 1: BOTS ──
+  if (filterConfig.filter_block_bots) {
+    const botPatterns = [
+      /bot/i, /crawler/i, /spider/i, /scraper/i, /semrush/i,
+      /ahrefs/i, /moz\.com/i, /headless/i, /phantom/i,
+      /selenium/i, /puppeteer/i, /playwright/i, /wget/i, /curl/i,
+      /python-requests/i, /axios/i, /node-fetch/i, /go-http/i,
+    ];
+    if (botPatterns.some(p => p.test(ua))) {
+      return redirect(filterConfig, request);
+    }
+  }
+
+
+  // ── CHECK 2: USER-AGENT VAZIO ──
+  if (filterConfig.filter_block_empty_ua && (!ua || ua.length < 20)) {
+    return redirect(filterConfig, request);
+  }
+
+
+  // ── CHECK 3: CÓDIGO DE ACESSO ──
+  if (filterConfig.filter_access_code) {
+    const paramName = filterConfig.filter_access_param || 'xyz';
+    const code = params.get(paramName);
+    if (code !== filterConfig.filter_access_code) {
+      return redirect(filterConfig, request);
+    }
+  }
+
+
+  // ── CHECK 4: ORIGEM OBRIGATÓRIA (utm_source) ──
+  if (filterConfig.filter_required_sources?.length > 0) {
+    const utmSource = params.get('utm_source') || '';
+    if (!filterConfig.filter_required_sources.includes(utmSource.toLowerCase())) {
+      return redirect(filterConfig, request);
+    }
+  }
+
+
+  // ── CHECK 5: PARÂMETROS OBRIGATÓRIOS ──
+  if (filterConfig.filter_required_params?.length > 0) {
+    const missing = filterConfig.filter_required_params.some(
+      (p: string) => !params.has(p)
+    );
+    if (missing) return redirect(filterConfig, request);
+  }
+
+
+  // ── CHECK 6: PAÍS ──
+  if (country) {
+    const upper = country.toUpperCase();
+    if (filterConfig.filter_allowed_countries?.length > 0
+        && !filterConfig.filter_allowed_countries.includes(upper)) {
+      return redirect(filterConfig, request);
+    }
+    if (filterConfig.filter_blocked_countries?.includes(upper)) {
+      return redirect(filterConfig, request);
+    }
+  }
+
+
+  // ── CHECK 7: ACESSO DIRETO ──
+  if (filterConfig.filter_block_direct) {
+    const ref = request.headers.get('referer') || '';
+    const hasParams = params.toString().length > 0;
+    if (!ref && !hasParams) {
+      return redirect(filterConfig, request);
+    }
+  }
+
+
+  return addSecurityHeaders(NextResponse.next());
+}
+
+
+function redirect(config: FilterConfig, request: NextRequest) {
+  const url = config.filter_redirect_url
+    || (config.filter_safe_page_slug
+      ? `/${config.filter_safe_page_slug}`
+      : '/blocked');
+  return NextResponse.redirect(new URL(url, request.url));
+}
+
+
+function addSecurityHeaders(res: NextResponse) {
+  res.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  res.headers.set('X-Frame-Options', 'DENY');
+  res.headers.set('Cache-Control', 'no-store');
+  return res;
+}
+
+
+export const config = { matcher: '/lp/:path*' };
+
+
+4.3 Exemplo Prático: LP Taboola
+Cenário: Você tem o produto 'Curso Marketing' e uma LP específica para Taboola. Só quem vier da campanha Taboola com o código correto pode ver a página.
+
+
+// Configuração no Strapi para essa LP:
+{
+  "slug": "curso-marketing-taboola-jan",
+  "filter_enabled": true,
+  "filter_access_code": "tb2026jan",
+  "filter_access_param": "xyz",
+  "filter_required_sources": ["taboola"],
+  "filter_required_params": ["tblci"],  // click ID do Taboola
+  "filter_allowed_countries": ["BR"],
+  "filter_block_bots": true,
+  "filter_block_empty_ua": true,
+  "filter_block_direct": true,
+  "filter_redirect_url": "",  // usa /blocked
+  "filter_safe_page_slug": "curso-marketing-digital"  // pag SEO do produto
+}
+
+
+// URL válida: /lp/curso-marketing-taboola-jan?xyz=tb2026jan&utm_source=taboola&tblci=xxx
+// URL bloqueada: /lp/curso-marketing-taboola-jan (sem parâmetros)
+// URL bloqueada: /lp/curso-marketing-taboola-jan?utm_source=google (origem errada)
+// URL bloqueada: /lp/curso-marketing-taboola-jan?xyz=codigoerrado (código errado)
+
+
+4.4 TrafficValidator (Client-Side)
+Camada adicional client-side que valida: navigator.webdriver === false, performance.now() > 100ms, interação mínima (mouse/touch/scroll). Enquanto valida: mostra skeleton loading. Se reprova: não renderiza conteúdo.
+
+
+4.5 Página de Bloqueio
+Cada LP pode configurar para onde redirecionar tráfego bloqueado:
+* filter_redirect_url: URL externa específica (pode ser qualquer site)
+* filter_safe_page_slug: Slug de uma página SEO do produto (ex: página informativa genérica)
+* Default: /blocked — página genérica com 'Conteúdo não disponível' sem revelar que é filtro
+________________
+
+
+5. TRACKING E CONVERSÃO — IMPLEMENTAÇÃO COMPLETA
+
+
+⚠️ ESTA SEÇÃO FECHA O GAP DE TRACKING. Todos os pixels, eventos e conversões estão detalhados aqui.
+
+
+5.1 Arquitetura de Tracking
+O tracking usa uma arquitetura em camadas:
+
+
+Camada 1: DataLayer (centralizado)
+  └── Todos os eventos vão para window.dataLayer
+
+
+Camada 2: GTM (orquestrador)
+  ├── Lê o DataLayer
+  ├── Dispara tags para GA4, Google Ads, Meta Pixel, Taboola
+  └── Gerencia consent mode
+
+
+Camada 3: Tags nativas (fallback p/ LPs específicas)
+  ├── gtag.js direto (Google Ads conversion)
+  ├── fbq() direto (Meta Pixel)
+  └── _tfa direto (Taboola Pixel)
+
+
+5.2 Campos de Tracking no Strapi
+
+
+GlobalSeo (configuração global)
+Campo
+	Tipo
+	Descrição
+	gtm_id
+	Text
+	GTM-XXXXXXX
+	ga4_measurement_id
+	Text
+	G-XXXXXXX
+	google_ads_id
+	Text
+	AW-XXXXXXX (conta do Google Ads)
+	meta_pixel_id
+	Text
+	Pixel ID global do Meta/Facebook
+	taboola_account_id
+	Text
+	ID da conta Taboola
+	
+
+LandingPage (por LP, overrides globais)
+Campo
+	Tipo
+	Descrição
+	tracking_google_ads_conversion_id
+	Text
+	AW-XXXXX/conversion_label (específico desta LP)
+	tracking_google_ads_conversion_label
+	Text
+	Label da conversão Google Ads
+	tracking_google_ads_conversion_value
+	Decimal
+	Valor da conversão (preço do produto)
+	tracking_meta_pixel_id
+	Text
+	Pixel ID específico (override do global)
+	tracking_meta_custom_event
+	Text
+	Nome do evento custom no Meta (ex: 'LeadCursoMkt')
+	tracking_taboola_pixel_id
+	Text
+	Pixel Taboola específico
+	tracking_taboola_event_name
+	Text
+	Nome do evento Taboola
+	tracking_custom_scripts
+	Text (Long)
+	Scripts adicionais de tracking (ex: TikTok, Twitter)
+	
+
+5.3 Implementação GTM + Scripts
+
+
+GtmScript Component
+// components/tracking/GtmScript.tsx
+// Insere GTM container no <head> via next/script strategy='afterInteractive'
+// <noscript> iframe no body
+// Props: gtmId (da GlobalSeo)
+
+
+PixelScripts Component (LPs)
+// components/tracking/PixelScripts.tsx
+// Renderizado APENAS em LPs
+// Carrega condicionalmente baseado nos campos da LP:
+
+
+// 1. GOOGLE ADS (gtag.js)
+//    Se tracking_google_ads_conversion_id preenchido:
+//    - Carrega gtag.js com o AW-XXXXX
+//    - Configura conversão: gtag('event', 'conversion', {
+//        send_to: 'AW-XXXXX/conversion_label',
+//        value: tracking_google_ads_conversion_value,
+//        currency: product.currency,
+//      });
+//    - O evento de conversão é disparado no click_checkout
+
+
+// 2. META PIXEL (fbq)
+//    Se tracking_meta_pixel_id preenchido (ou global):
+//    - Carrega pixel base: fbq('init', 'PIXEL_ID')
+//    - PageView: fbq('track', 'PageView')
+//    - No click_checkout: fbq('track', 'InitiateCheckout', {
+//        content_name: product.name,
+//        content_ids: [product.slug],
+//        value: product.price,
+//        currency: product.currency,
+//      });
+//    - Se tracking_meta_custom_event preenchido:
+//      fbq('trackCustom', 'LeadCursoMkt', { ... })
+
+
+// 3. TABOOLA PIXEL
+//    Se tracking_taboola_pixel_id preenchido:
+//    - Carrega pixel Taboola
+//    - PageView: _tfa.push({ notify: 'event', name: 'page_view' })
+//    - No click_checkout: _tfa.push({
+//        notify: 'event',
+//        name: tracking_taboola_event_name || 'make_purchase',
+//        revenue: product.price,
+//        currency: product.currency,
+//      });
+
+
+// 4. SCRIPTS CUSTOMIZADOS
+//    Se tracking_custom_scripts preenchido:
+//    - Injeta via dangerouslySetInnerHTML com strategy='lazyOnload'
+
+
+5.4 Eventos do DataLayer (Completo)
+Evento
+	Quando
+	Dados enviados
+	page_view
+	Toda pageview
+	page_type, product_slug, product_name, traffic_source, campaign_id, keyword, page_slug
+	click_checkout
+	Clique em qualquer CTA de compra
+	product_name, product_slug, price, currency, source_page, page_type, checkout_url, traffic_source
+	scroll_depth_25/50/75/100
+	Scroll milestones
+	page_type, page_slug, depth
+	video_play
+	Play de vídeo (VSL)
+	video_url, page_slug, video_duration
+	video_progress_25/50/75/100
+	Progresso do vídeo
+	video_url, progress_pct
+	exit_intent
+	Mouse leave (desktop) / 30s sem CTA click (mobile)
+	page_slug, time_on_page, scroll_depth_at_exit
+	cta_view
+	CTA entra no viewport
+	cta_text, cta_position, page_slug
+	faq_open
+	Clique em pergunta FAQ
+	question_text, page_slug, position_index
+	testimonial_view
+	Depoimento entra no viewport
+	author_name, page_slug
+	countdown_expired
+	Timer chega a zero
+	page_slug, countdown_type
+	filter_blocked
+	Tráfego bloqueado pelo filtro
+	reason, country, ua_hash, page_slug
+	
+
+5.5 Fluxo de Conversão: Click → Checkout
+// Quando o usuário clica no CTA:
+
+
+1. DataLayer: push({ event: 'click_checkout', ... })
+
+
+2. Google Ads (se configurado):
+   gtag('event', 'conversion', {
+     send_to: 'AW-XXX/label',
+     value: 197.00,
+     currency: 'BRL',
+   });
+
+
+3. Meta Pixel (se configurado):
+   fbq('track', 'InitiateCheckout', {
+     content_name: 'Curso Marketing Digital',
+     value: 197.00,
+     currency: 'BRL',
+   });
+
+
+4. Taboola (se configurado):
+   _tfa.push({ notify:'event', name:'make_purchase',
+     revenue: 197.00, currency: 'BRL' });
+
+
+5. Aguardar 300ms (garantir processamento dos pixels)
+
+
+6. Redirect para checkout:
+   https://pay.hotmart.com/ABC?utm_source=taboola&utm_medium=cpc
+     &utm_campaign=curso-mkt-jan&utm_content=curso-marketing-taboola-jan
+     &tblci=xxx&src=lp_curso-marketing-taboola-jan&ref=curso-marketing-digital
+
+
+5.6 UTM e Click ID Passthrough
+O componente CtaButton/buildCheckoutUrl DEVE preservar todos os click IDs que vieram na URL original:
+
+
+Parâmetro
+	Plataforma
+	Como funciona
+	gclid
+	Google Ads
+	Auto-tagging. Passado para checkout para atribuição.
+	fbclid
+	Meta/Facebook
+	Click ID do Meta. Necessário para CAPI.
+	tblci
+	Taboola
+	Click ID do Taboola. Obrigatório para conversão.
+	msclkid
+	Microsoft Ads
+	Click ID do Bing Ads.
+	ttclid
+	TikTok Ads
+	Click ID do TikTok.
+	wbraid/gbraid
+	Google (iOS)
+	Modelagem de conversão iOS.
+	
+
+// lib/checkout.ts - buildCheckoutUrl
+// ALÉM dos UTMs, preservar TODOS estes parâmetros da URL original:
+const PASSTHROUGH_PARAMS = [
+  'gclid', 'fbclid', 'tblci', 'msclkid', 'ttclid',
+  'wbraid', 'gbraid', 'dclid', 'li_fat_id',
+];
+// Copiar da URL atual para a URL de checkout
+________________
+
+
+6. STRAPI — CONTENT TYPES
+
+
+Resumo dos Content Types. Os campos de tracking e filtro já foram detalhados nas seções 4 e 5. Aqui está a visão consolidada.
+
+
+6.1 Product (Collection)
+Campo
+	Tipo
+	Nota
+	name
+	Text (Short)
+	Nome do produto
+	slug
+	UID (from name)
+	
+
+	description
+	Rich Text (Blocks)
+	Descrição geral
+	short_description
+	Text (Long)
+	Para cards (max 200 chars)
+	checkout_base_url
+	Text (Short)
+	URL base checkout. Cada produto tem a sua.
+	price
+	Decimal
+	Preço atual
+	price_original
+	Decimal (opt)
+	Preço riscado
+	currency
+	Enum: BRL, USD, EUR
+	
+
+	featured_image
+	Media (Single)
+	1200x630 mínimo
+	gallery
+	Media (Multiple)
+	Imagens adicionais
+	is_active
+	Boolean
+	Default: true
+	seo_pages
+	Relation: has many → SeoPage
+	
+
+	landing_pages
+	Relation: has many → LandingPage
+	
+
+	testimonials
+	Component (Rep): Testimonial
+	Reutilizável entre SEO e LPs
+	faq
+	Component (Rep): FaqItem
+	
+
+	trust_badges
+	Component (Rep): TrustBadge
+	icon (Enum) + label
+	guarantee_text
+	Text (Short)
+	Ex: '30 dias de garantia'
+	guarantee_days
+	Integer
+	
+
+	safe_page_slug
+	Text (Short)
+	Slug da página genérica de redirect para filtro
+	
+
+6.2 SeoPage (Collection)
+Todos os campos da V2 seção 4.2 + featured_image. Sem alterações.
+
+
+6.3 LandingPage (Collection)
+Todos os campos da V2 seção 4.3 + campos de filtro (seção 4.1) + campos de tracking (seção 5.2) + theme_override (JSON para cores custom) + body_sections (Dynamic Zone com TODOS os componentes da seção 3.7).
+
+
+6.4 GlobalSeo (Single Type)
+Todos os campos da V2 seção 4.4 + campos de tracking global (seção 5.2).
+________________
+
+
+7. FRONTEND — ESTRUTURA DE PASTAS E ROTAS
+
+
+7.1 Estrutura de Pastas
+app/
+├── (main)/                             # Route group principal (URLs humanas)
+│   ├── layout.tsx                      # Header full + Footer full
+│   ├── [product-slug]/
+│   │   ├── page.tsx                    # Página principal produto (SSG+ISR)
+│   │   └── [page-slug]/
+│   │       └── page.tsx                # Sub-páginas SEO (SSG+ISR)
+│   └── blog/
+│       └── [blog-slug]/
+│           └── page.tsx                # Blog (SSG+ISR)
+├── lp/
+│   ├── layout.tsx                      # SEM Header | Footer minimal | FloatingCta
+│   │                                    # TrafficValidator | PixelScripts
+│   └── [lp-slug]/
+│       └── page.tsx                    # LP (SSR, force-dynamic)
+├── blocked/
+│   └── page.tsx                        # Página genérica bloqueio
+├── api/
+│   ├── revalidate/route.ts
+│   └── track/route.ts                  # Server-side event tracking
+├── layout.tsx                           # Root: fonts, GTM, DataLayer
+├── globals.css
+├── fonts.ts
+├── sitemap.ts                           # SÓ páginas de (main)
+├── robots.ts                            # Disallow: /lp/, /api/, /blocked
+└── not-found.tsx
+
+
+components/
+├── ui/          # Primitivos: Button, Card, Badge, Accordion, etc.
+├── content/     # SEO: ProductHero, ContentBody, FaqSection, RelatedPages
+├── lp/          # LP: LpHero, LpProblem, LpBenefits, etc. + DynamicZoneRenderer
+├── layout/      # Header, Footer (full+minimal), FloatingCta, ExitPopup
+└── tracking/    # GtmScript, DataLayerInit, PixelScripts
+
+
+lib/
+├── strapi.ts    # Funções de fetch com cache tags
+├── checkout.ts  # buildCheckoutUrl com UTMs + click ID passthrough
+├── schema.ts    # JSON-LD automático
+├── filter.ts    # getFilterConfig (busca config do filtro)
+├── types.ts     # Interfaces TypeScript
+└── utils.ts     # cn(), formatPrice(), etc.
+
+
+middleware.ts   # Filtro de tráfego (seção 4.2)
+
+
+✅ Note: pasta '(main)' em vez de '(seo)'. URLs ficam /produto-slug, /produto-slug/artigo, /blog/artigo. Humanas e limpas.
+________________
+
+
+8. SEO TÉCNICO — CODE-LEVEL
+
+
+SEO não é só conteúdo. O código dos componentes afeta diretamente indexação e rankeamento. Cada detalhe abaixo é obrigatório.
+
+
+8.1 HTML Semântico nos Componentes
+TODOS os componentes devem usar tags HTML semânticas corretas:
+
+
+Contexto
+	Tag HTML
+	Nunca usar
+	Conteúdo principal
+	<main>
+	<div> como wrapper principal
+	Seções da página
+	<section> com aria-labelledby
+	<div> genérico
+	Artigos/blog posts
+	<article>
+	<div>
+	Navegação
+	<nav> com aria-label
+	<div class='nav'>
+	Barra lateral (TOC)
+	<aside>
+	<div class='sidebar'>
+	Breadcrumbs
+	<nav aria-label='Breadcrumb'><ol>
+	<div> com links soltos
+	Footer
+	<footer>
+	<div class='footer'>
+	Header/Navbar
+	<header>
+	<div class='header'>
+	Listas de features
+	<ul>/<ol>
+	<div> com <p> para cada item
+	Depoimentos
+	<blockquote cite> + <cite>
+	<div> + <p>
+	FAQ
+	<details>/<summary> ou dl/dt/dd
+	<div> + <div>
+	Imagens
+	<figure> + <figcaption>
+	<div> + <img>
+	
+
+8.2 Heading Hierarchy
+* Uma única <h1> por página. A H1 vem do campo h1 (SeoPage) ou headline (LP).
+* Hierarquia sequencial: H1 → H2 → H3. Nunca pular de H1 para H3.
+* Headings reais: Usar <h2>, <h3> etc. NUNCA usar <p class='text-h2'>. Crawlers leem tags, não classes.
+* Componente HeadingLevel: Criar utility que aceita level prop e renderiza a tag correta. Componentes reutilizáveis usam isso para manter hierarquia consistente.
+
+
+8.3 next/image — Regras para SEO
+* SEMPRE definir alt text descritivo. O alt vem de um campo no Strapi (image.alternativeText). Se vazio, usar 'Imagem de [nome do produto]'.
+* Width e height explícitos em todo next/image para zero CLS.
+* Priority={true} APENAS na imagem hero above-the-fold (1 por página). Isso gera preload link no HTML.
+* Sizes explícitos: Ex: sizes='(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'. Evita download de imagem maior que necessário.
+* Formato: next/image gera WebP/AVIF automaticamente. Não forcar formato.
+
+
+8.4 Schema JSON-LD Automático
+O componente SchemaScript gera e injeta JSON-LD no <head> das páginas SEO:
+
+
+* Product: name, description, image, offers (price, currency, availability), aggregateRating (dos testimonials)
+* Article: headline, datePublished, dateModified, author, image
+* FAQPage: mainEntity com array de Question/Answer
+* BreadcrumbList: Gerado automaticamente pela BreadcrumbNav em toda página
+* HowTo: Para páginas tipo 'how-to' (passo a passo)
+* Override: Campo schema_markup (JSON) no SeoPage tem precedência total quando preenchido
+
+
+8.5 Core Web Vitals — Targets Obrigatórios
+Métrica
+	Target
+	Como garantir
+	LCP
+	< 2.5s
+	Hero image com priority, ISR, edge CDN, next/image WebP
+	CLS
+	< 0.1
+	Dimensões explícitas em imagens, next/font swap, skeleton loaders
+	INP
+	< 200ms
+	Server components, event delegation, zero heavy JS no main thread
+	FCP
+	< 1.8s
+	Critical CSS inline (Next.js auto), preload fonts, ISR
+	TTFB
+	< 600ms
+	Edge runtime, ISR cache, Vercel edge network
+	
+
+8.6 Outras Otimizações SEO
+* Canonical: Auto-referenciando em todas as páginas SEO. NUNCA nas LPs.
+* Sitemap: Gerado em app/sitemap.ts. APENAS páginas de (main)/. NUNCA /lp/.
+* robots.txt: Disallow: /lp/, /api/, /blocked
+* Internal linking: Componente RelatedPages com links para cluster. Não usar nofollow em links internos.
+* hreflang: Se multi-idioma futuro, preparar com alternates.
+* Clean URLs: Sem trailing slashes, sem .html, sem parâmetros desnecessários.
+* 404: Página customizada com links para páginas principais. Não retornar 200 em páginas inexistentes.
+* Redirects: Se mudar slugs, configurar redirects em next.config.js.
+
+
+8.7 Acessibilidade (afeta SEO)
+* Links com texto descritivo: Nunca 'clique aqui'. Sempre 'Ver depoimentos dos alunos'.
+* ARIA labels: Em nav, landmarks, botões com apenas ícone.
+* Skip to content: Link oculto no topo para teclado.
+* Contraste: Mínimo 4.5:1 para texto, 3:1 para texto grande (WCAG AA).
+* Focus visible: Outline visível em todos os elementos interativos.
+________________
+
+
+9. ARQUITETURA MULTI-PRODUTO
+
+
+O sistema suporta N produtos. Cada produto é independente com suas próprias páginas, LPs, checkout e configurações.
+
+
+9.1 Mapa de Exemplo: 2 Produtos
+PRODUTO A: Curso Marketing Digital
+slug: curso-marketing-digital
+checkout: https://pay.hotmart.com/ABC123
+safe_page: curso-marketing-digital (página SEO para redirect filtro)
+
+
+├── SEO (index) via (main)/
+│   ├── /curso-marketing-digital
+│   ├── /curso-marketing-digital/o-que-e-marketing-digital
+│   ├── /curso-marketing-digital/melhor-curso-marketing
+│   └── /blog/guia-marketing-digital-2026
+│
+├── PAID (noindex) via /lp/
+│   ├── /lp/curso-mkt-google-renda-extra
+│   │   filtro: gclid obrig, utm_source=google, código=gads2026
+│   │   tracking: Google Ads AW-111/conv1, Meta Pixel 222
+│   │
+│   ├── /lp/curso-mkt-taboola-trabalhar-casa
+│   │   filtro: tblci obrig, utm_source=taboola, código=tb2026jan, BR only
+│   │   tracking: Taboola Pixel 333, custom event
+│   │
+│   └── /lp/curso-mkt-meta-iniciantes
+│       filtro: fbclid obrig, utm_source=facebook, sem código
+│       tracking: Meta Pixel 444, Google Ads AW-111/conv2
+│
+└── CHECKOUT → https://pay.hotmart.com/ABC123?utms...
+
+
+================================================
+
+
+PRODUTO B: Template de Landing Pages
+slug: template-landing-pages
+checkout: https://pay.kiwify.com/XYZ789
+safe_page: template-landing-pages
+
+
+├── SEO via (main)/
+│   ├── /template-landing-pages
+│   └── /template-landing-pages/como-criar-landing-page
+│
+├── PAID via /lp/
+│   └── /lp/templates-lp-profissionais
+│       filtro: gclid obrig, utm_source=google
+│       tracking: Google Ads AW-555/conv3
+│
+└── CHECKOUT → https://pay.kiwify.com/XYZ789?utms...
+
+
+✅ Note: cada produto tem seu próprio checkout_base_url. Cada LP tem seu próprio filtro e tracking. Tudo configurável no Strapi sem tocar no código.
+________________
+
+
+10. PERFORMANCE
+
+
+Cada 100ms de atraso reduz conversão em ~7%. Regras obrigatórias:
+
+
+* Server Components por padrão. Só 'use client' quando necessário (clique, hover, timer).
+* next/image em TODAS as imagens. Com sizes, priority (1 por page), blur placeholder.
+* next/font self-hosted. Zero requests para Google Fonts. font-display: swap.
+* Video Facade. Thumbnail estática > iframe só no clique. Zero YouTube JS no load.
+* Dynamic imports. Countdown, ExitPopup, VideoPlayer: next/dynamic com ssr: false.
+* Scripts terceiros. GTM: afterInteractive. Pixels: lazyOnload.
+* ISR + on-demand revalidation. Páginas SEO: revalidate 3600 + webhook. LPs: SSR sem cache.
+* Bundle analyzer. @next/bundle-analyzer para monitorar.
+* Zero CSS-in-JS. Tailwind only. Nada de styled-components, emotion.
+* Dependências proibidas: jQuery, Bootstrap, Swiper (pesado), Slick, styled-components, moment.js.
+________________
+
+
+11. VARIÁVEIS DE AMBIENTE E DEPENDÊNCIAS
+
+
+11.1 .env.local (Next.js)
+STRAPI_API_URL=https://seu-strapi.com/api
+STRAPI_API_TOKEN=seu_bearer_token
+NEXT_PUBLIC_SITE_URL=https://seudominio.com
+REVALIDATE_SECRET=uuid_seguro
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
+# Os demais IDs de tracking ficam no Strapi (GlobalSeo e por LP)
+
+
+11.2 Dependencies (Next.js)
+dependencies:
+  next ^14.2, react ^18.3, react-dom ^18.3,
+  @headlessui/react ^2.1, framer-motion ^11.0,
+  lucide-react ^0.400, clsx ^2.1, tailwind-merge ^2.3
+
+
+devDependencies:
+  typescript ^5.4, tailwindcss ^3.4,
+  @tailwindcss/typography ^0.5, @tailwindcss/forms ^0.5,
+  @tailwindcss/aspect-ratio ^0.4, postcss ^8.4, autoprefixer ^10.4,
+  @next/bundle-analyzer ^14.2, eslint ^8.57, eslint-config-next ^14.2
+
+
+PROIBIDO: jQuery, Bootstrap, Swiper, styled-components, moment.js
+________________
+
+
+12. ORDEM DE EXECUÇÃO (FASES)
+
+
+⚠️ SEGUIR ESTA ORDEM RIGOROSAMENTE. Cada fase depende da anterior.
+
+
+Fase 1: Strapi Backend
+1. Criar projeto Strapi v5 com TypeScript e PostgreSQL
+2. Criar componentes reutilizáveis: Testimonial, FaqItem, TrustBadge, SocialProof
+3. Criar TODOS os componentes da Dynamic Zone (seção 3.7 — 14 componentes)
+4. Criar Collection Type: Product (seção 6.1) com todos os campos incl. safe_page_slug
+5. Criar Collection Type: SeoPage (seção 6.2)
+6. Criar Collection Type: LandingPage (seção 6.3) com campos de filtro (4.1) + tracking (5.2) + Dynamic Zone
+7. Criar Single Type: GlobalSeo (seção 6.4) com campos de tracking global
+8. Configurar API permissions + webhook de revalidação
+9. Inserir conteúdo de teste: 2 produtos, 2 SeoPages cada, 2 LPs cada com filtros diferentes
+
+
+Fase 2: Next.js Setup + Design System
+1. Criar projeto Next.js 14+ com App Router e TypeScript
+2. Instalar TODAS as dependências (seção 11.2)
+3. Configurar tailwind.config.ts completo (seção 2.1)
+4. Configurar fonts (Inter + Plus Jakarta) e globals.css
+5. Criar lib/types.ts, lib/strapi.ts, lib/checkout.ts, lib/schema.ts, lib/filter.ts, lib/utils.ts
+
+
+Fase 3: Componentes
+1. Primitivos UI: Button, Card, Badge, Accordion, VideoEmbed, Countdown, RatingStars, ProgressBar, Skeleton, Container, SectionWrapper, Divider
+2. Tracking: GtmScript, DataLayerInit, PixelScripts
+3. Layout: Header, Footer (full+minimal), FloatingCta, ExitIntentPopup
+4. Content (SEO): ProductHero, ContentBody, FaqSection, TestimonialGrid, RelatedPages, BreadcrumbNav, SchemaScript, TableOfContents
+5. LP: TODOS os 14 componentes da Dynamic Zone (seção 3.7) + DynamicZoneRenderer + TrafficValidator + CtaButton
+
+
+Fase 4: Rotas e Integração
+1. app/layout.tsx (root) com fonts + GTM
+2. app/(main)/layout.tsx com Header full + Footer full
+3. app/lp/layout.tsx com Footer minimal + FloatingCta + PixelScripts + TrafficValidator
+4. app/(main)/[product-slug]/page.tsx (SSG+ISR)
+5. app/(main)/[product-slug]/[page-slug]/page.tsx (SSG+ISR)
+6. app/(main)/blog/[blog-slug]/page.tsx (SSG+ISR)
+7. app/lp/[lp-slug]/page.tsx (SSR, force-dynamic)
+8. middleware.ts com filtro completo (seção 4.2)
+9. app/sitemap.ts + app/robots.ts
+10. app/api/revalidate/route.ts
+11. app/blocked/page.tsx + app/not-found.tsx
+
+
+Fase 5: QA e Validação
+1. Testar fluxo SEO: Strapi → página → checkout com UTMs
+2. Testar fluxo LP com filtro: URL válida passa, inválida bloqueia
+3. Testar LP Taboola: ?xyz=codigo&utm_source=taboola&tblci=xxx funciona
+4. Verificar noindex em /lp/* (meta + header HTTP)
+5. Verificar sitemap (só páginas main), robots.txt
+6. Testar click_checkout: DataLayer + gtag + fbq + _tfa disparam
+7. Testar gclid/fbclid/tblci passthrough para checkout URL
+8. Validar Schema no Google Rich Results Test
+9. Lighthouse: LCP < 2.5s, CLS < 0.1, INP < 200ms
+10. Testar multi-produto: 2 produtos com checkouts diferentes
+11. Testar responsive: 375px, 768px, 1024px, 1280px
+12. Verificar HTML semântico: main, section, article, nav, aside, header, footer
+________________
+
+
+Fim do Briefing Técnico V3
+Execute na ordem da Seção 12. Valide com a Fase 5.
+Página

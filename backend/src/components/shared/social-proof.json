@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_shared_social_proofs",
+  "info": {
+    "displayName": "Social Proof Metric",
+    "description": "Métrica de prova social com valor, label e ícone",
+    "icon": "chart-line"
+  },
+  "options": {},
+  "attributes": {
+    "value": {
+      "type": "string",
+      "required": true,
+      "maxLength": 50
+    },
+    "label": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "icon": {
+      "type": "enumeration",
+      "enum": [
+        "users",
+        "star",
+        "award",
+        "trending-up",
+        "check-circle",
+        "heart",
+        "globe",
+        "calendar",
+        "play",
+        "download"
+      ],
+      "default": "users"
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 200
+    }
+  }
+}
