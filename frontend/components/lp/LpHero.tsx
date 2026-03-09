@@ -17,7 +17,7 @@ interface LpHeroProps {
 
 export function LpHero({ data, product, landingPage }: LpHeroProps) {
   return (
-    <section className="py-20 bg-gradient-to-b from-brand-50 to-white overflow-hidden">
+    <section className="py-20 bg-gradient-to-b from-surface-900 to-surface-800 text-white overflow-hidden">
       <Container>
         <div className="max-w-narrow mx-auto text-center">
           {/* Badge de urgência */}
@@ -27,7 +27,7 @@ export function LpHero({ data, product, landingPage }: LpHeroProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Badge variant="accent" className="mb-6 text-base">
+              <Badge variant="accent" className="mb-6 text-base text-surface-900 font-bold bg-accent-500">
                 {data.badge_text}
               </Badge>
             </motion.div>
@@ -45,7 +45,7 @@ export function LpHero({ data, product, landingPage }: LpHeroProps) {
 
           {/* Sub-headline */}
           <motion.p
-            className="text-h3 text-surface-600 mb-8"
+            className="text-h3 text-surface-200 mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -56,7 +56,7 @@ export function LpHero({ data, product, landingPage }: LpHeroProps) {
           {/* Imagem ou Vídeo */}
           {(data.hero_image || data.hero_video_url) && (
             <motion.div
-              className="mb-8"
+              className="mb-8 p-1 bg-surface-800 rounded-xl"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}

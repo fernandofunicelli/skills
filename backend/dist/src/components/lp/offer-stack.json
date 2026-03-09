@@ -1,0 +1,42 @@
+{
+    "collectionName": "components_lp_offer_stacks",
+    "info": {
+        "displayName": "LP Offer Stack",
+        "description": "Stack de valor com itens incluídos, preço e parcelamento",
+        "icon": "package"
+    },
+    "options": {},
+    "attributes": {
+        "headline": {
+            "type": "string",
+            "required": true,
+            "maxLength": 200,
+            "default": "O Que Você Vai Receber"
+        },
+        "items": {
+            "type": "component",
+            "repeatable": true,
+            "component": "shared.trust-badge",
+            "required": true
+        },
+        "total_value": {
+            "type": "string",
+            "maxLength": 50
+        },
+        "actual_price": {
+            "type": "string",
+            "required": true,
+            "maxLength": 50
+        },
+        "installment_text": {
+            "type": "string",
+            "maxLength": 100
+        },
+        "cta_text": {
+            "type": "string",
+            "required": true,
+            "maxLength": 100,
+            "default": "GARANTIR MINHA VAGA AGORA"
+        }
+    }
+}

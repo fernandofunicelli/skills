@@ -1,0 +1,19 @@
+{
+    "collectionName": "components_lp_custom_htmls",
+    "info": {
+        "displayName": "LP Custom HTML",
+        "description": "HTML customizado para embeds específicos",
+        "icon": "code"
+    },
+    "options": {},
+    "attributes": {
+        "html_content": {
+            "type": "text",
+            "required": true
+        },
+        "cta_text": {
+            "type": "string",
+            "maxLength": 100
+        }
+    }
+}

@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest frontend --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --turbopack)",
+      "Bash(npx create-next-app@latest frontend --typescript --tailwind --eslint --app --no-src-dir --import-alias \"@/*\" --turbopack --use-npm --yes)",
+      "Bash(npm install @headlessui/react framer-motion lucide-react clsx tailwind-merge @tailwindcss/typography @tailwindcss/forms @tailwindcss/aspect-ratio)",
+      "Bash(ls frontend/*.{ts,js,json})",
+      "Bash(npm install -D tailwindcss@3.4 postcss@8 autoprefixer@10)",
+      "Bash(npm install pg)",
+      "Bash(timeout 10 powershell -Command \"Start-Sleep -Seconds 8\")",
+      "Bash(curl -s http://localhost:1337/_health)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /F /PID 27572 /PID 8076)",
+      "Bash(npm run develop)",
+      "Bash(node setup-strapi.js)",
+      "Bash(node populate-strapi.js)",
+      "Bash(node setup-completo.js)",
+      "Bash(node test-apis.js)",
+      "Bash(timeout 15 powershell -Command \"Start-Sleep -Seconds 12\")",
+      "Bash(git init)",
+      "Bash(git config user.name \"Fernando\")",
+      "Bash(git config user.email \"fernaando@hotmail.it\")",
+      "Bash(git add .)",
+      "Bash(git commit -m \"feat: Implementação completa do Ecossistema de Vendas V3\n\n- Backend Strapi v5 com PostgreSQL/SQLite\n- 4 Content Types (Product, Landing Page, SEO Page, Global SEO)\n- 4 Shared Components + 14 LP Dynamic Zone Components\n- Frontend Next.js 14+ com App Router\n- 35+ componentes React (UI, Tracking, Layout, Content, LP)\n- Middleware com 7 camadas de filtro de tráfego\n- Tracking multi-plataforma (GTM, GA4, Ads, Meta, Taboola)\n- SEO técnico completo (schemas, meta tags, sitemap)\n- Performance otimizada (ISR, SSR, Edge Middleware)\n- 72 arquivos, ~10.000+ linhas de código\n\n🤖 Generated with Claude Code\nCo-Authored-By: Claude <noreply@anthropic.com>\")",
+      "Bash(git branch -M main)",
+      "Bash(gh repo create FrameworkDirectResponse --private --source=. --remote=origin --push)",
+      "Bash(git remote add origin https://github.com/fernandofunicelli/FrameworkDirectResponse.git)",
+      "Bash(git push -u origin main)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

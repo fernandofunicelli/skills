@@ -1,0 +1,37 @@
+{
+    "collectionName": "components_lp_guarantees",
+    "info": {
+        "displayName": "LP Guarantee",
+        "description": "Seção de garantia com ícone e texto",
+        "icon": "shield"
+    },
+    "options": {},
+    "attributes": {
+        "headline": {
+            "type": "string",
+            "required": true,
+            "maxLength": 200,
+            "default": "Garantia Incondicional"
+        },
+        "body": {
+            "type": "text",
+            "required": true
+        },
+        "days": {
+            "type": "integer",
+            "default": 30,
+            "min": 1,
+            "max": 365
+        },
+        "icon_style": {
+            "type": "enumeration",
+            "enum": ["shield", "badge", "stamp"],
+            "default": "shield",
+            "required": true
+        },
+        "cta_text": {
+            "type": "string",
+            "maxLength": 100
+        }
+    }
+}

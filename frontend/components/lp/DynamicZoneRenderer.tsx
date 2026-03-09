@@ -16,18 +16,18 @@ import { LpComparison } from './LpComparison';
 
 function LpProblem({ data, product, landingPage }: any) {
   return (
-    <div className="py-16">
+    <div className="py-16 bg-surface-900 text-white">
       <div className="container-custom">
         <h2 className="text-h2 font-heading text-center mb-8">{data.headline}</h2>
         <div className="max-w-narrow mx-auto space-y-4">
           {data.pain_points?.map((point: any, i: number) => (
-            <div key={i} className="flex gap-3 p-4 bg-danger-500/5 border-l-4 border-danger-500 rounded">
+            <div key={i} className="flex gap-3 p-4 bg-surface-800 border-l-4 border-danger-500 rounded">
               <span className="text-danger-500">❌</span>
-              <p>{point.label}</p>
+              <p className="text-surface-100">{point.label}</p>
             </div>
           ))}
         </div>
-        {data.transition_text && <p className="text-center mt-8 text-body-lg">{data.transition_text}</p>}
+        {data.transition_text && <p className="text-center mt-8 text-body-lg text-surface-200">{data.transition_text}</p>}
         {data.cta_text && (
           <div className="mt-8 text-center">
             <CtaButton product={product} landingPage={landingPage} text={data.cta_text} />
@@ -40,15 +40,15 @@ function LpProblem({ data, product, landingPage }: any) {
 
 function LpBenefits({ data, product, landingPage }: any) {
   return (
-    <div className="py-16 bg-surface-50">
+    <div className="py-16 bg-surface-800 text-white">
       <div className="container-custom">
         <h2 className="text-h2 font-heading text-center mb-12">{data.headline}</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.items?.map((item: any, i: number) => (
-            <div key={i} className="bg-white p-6 rounded-card shadow-card">
+            <div key={i} className="bg-surface-900 p-6 rounded-card shadow-card border border-surface-200/10">
               <div className="text-brand-500 text-2xl mb-3">✓</div>
               <h3 className="text-h3 font-heading mb-2">{item.label}</h3>
-              <p className="text-body text-surface-600">{item.description}</p>
+              <p className="text-body text-surface-200">{item.description}</p>
             </div>
           ))}
         </div>
@@ -64,21 +64,21 @@ function LpBenefits({ data, product, landingPage }: any) {
 
 function LpTestimonials({ data }: any) {
   return (
-    <div className="py-16">
+    <div className="py-16 bg-surface-900 text-white">
       <div className="container-custom">
         <h2 className="text-h2 font-heading text-center mb-12">{data.headline}</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.items?.map((item: any, i: number) => (
-            <div key={i} className="bg-white p-6 rounded-card shadow-card">
+            <div key={i} className="bg-surface-800 p-6 rounded-card shadow-card">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-brand-100 rounded-full" />
+                <div className="w-12 h-12 bg-surface-200 rounded-full" />
                 <div>
                   <p className="font-semibold">{item.author_name}</p>
                   <div className="text-accent-500">{'⭐'.repeat(item.rating || 5)}</div>
                 </div>
               </div>
-              <p className="text-body italic">"{item.content}"</p>
-              {item.badge_text && <span className="text-body-sm text-success-600 mt-2 block">✅ {item.badge_text}</span>}
+              <p className="text-body italic text-surface-100">"{item.content}"</p>
+              {item.badge_text && <span className="text-body-sm text-success-500 mt-2 block">✅ {item.badge_text}</span>}
             </div>
           ))}
         </div>
@@ -89,21 +89,26 @@ function LpTestimonials({ data }: any) {
 
 function LpOfferStack({ data, product, landingPage }: any) {
   return (
-    <div className="py-16 bg-brand-950 text-white">
-      <div className="container-narrow mx-auto">
-        <h2 className="text-h2 font-heading text-center mb-12">{data.headline}</h2>
-        <div className="space-y-3 mb-8">
+    <div className="py-16 bg-surface-800 text-white">
+      <div className="container-narrow mx-auto border-2 border-brand-500 rounded-2xl p-8 relative overflow-hidden shadow-[0_0_30px_rgba(230,10,21,0.2)]">
+        {/* Glow effect */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-brand-500/20 blur-[50px] pointer-events-none" />
+
+        <h2 className="text-h2 font-heading text-center mb-12 relative z-10">{data.headline}</h2>
+        <div className="space-y-3 mb-8 relative z-10">
           {data.items?.map((item: any, i: number) => (
-            <div key={i} className="flex justify-between items-center p-4 bg-white/10 rounded">
-              <span>✓ {item.label}</span>
-              {item.description && <span className="text-accent-400">{item.description}</span>}
+            <div key={i} className="flex justify-between items-center p-4 bg-surface-900 rounded border border-surface-200/20">
+              <span className="font-semibold text-surface-50">✓ {item.label}</span>
+              {item.description && <span className="text-accent-400 font-bold">{item.description}</span>}
             </div>
           ))}
         </div>
-        {data.total_value && <p className="text-center text-surface-400 line-through text-h3">Valor total: {data.total_value}</p>}
-        <p className="text-center text-display text-brand-400 font-bold mt-2">{data.actual_price}</p>
-        {data.installment_text && <p className="text-center text-body-lg mt-2">{data.installment_text}</p>}
-        <div className="mt-8 text-center">
+        <div className="relative z-10">
+          {data.total_value && <p className="text-center text-surface-400 line-through text-h3">Valor total: {data.total_value}</p>}
+          <p className="text-center text-display text-white font-bold mt-2">{data.actual_price}</p>
+          {data.installment_text && <p className="text-center text-body-lg text-success-400 font-bold mt-2">{data.installment_text}</p>}
+        </div>
+        <div className="mt-8 text-center relative z-10">
           <CtaButton product={product} landingPage={landingPage} text={data.cta_text} variant="urgency" size="xl" />
         </div>
       </div>
@@ -113,13 +118,13 @@ function LpOfferStack({ data, product, landingPage }: any) {
 
 function LpGuarantee({ data }: any) {
   return (
-    <div className="py-16">
+    <div className="py-16 bg-surface-900 text-white">
       <div className="container-narrow mx-auto">
-        <div className="border-2 border-success-500 bg-success-500/5 rounded-card p-8 text-center">
+        <div className="border-2 border-success-500 bg-success-500/10 rounded-card p-8 text-center">
           <div className="text-success-500 text-6xl mb-4">🛡️</div>
-          <h2 className="text-h2 font-heading mb-4">{data.headline}</h2>
-          <p className="text-body-lg">{data.body}</p>
-          <p className="text-h3 text-success-600 font-bold mt-4">{data.days} Dias de Garantia</p>
+          <h2 className="text-h2 font-heading mb-4 text-white">{data.headline}</h2>
+          <p className="text-body-lg text-surface-200">{data.body}</p>
+          <p className="text-h3 text-success-500 font-bold mt-4">{data.days} Dias de Garantia</p>
         </div>
       </div>
     </div>
@@ -128,14 +133,17 @@ function LpGuarantee({ data }: any) {
 
 function LpFaq({ data }: any) {
   return (
-    <div className="py-16 bg-surface-50">
+    <div className="py-16 bg-surface-800 text-white">
       <div className="container-narrow mx-auto">
         <h2 className="text-h2 font-heading text-center mb-12">{data.headline}</h2>
         <div className="space-y-4">
           {data.items?.map((item: any, i: number) => (
-            <details key={i} className="bg-white p-6 rounded-card shadow-card">
-              <summary className="font-semibold cursor-pointer">{item.question}</summary>
-              <p className="mt-4 text-surface-600">{item.answer}</p>
+            <details key={i} className="bg-surface-900 p-6 rounded-card shadow-card border border-surface-200/10 group">
+              <summary className="font-semibold cursor-pointer list-none flex justify-between items-center">
+                {item.question}
+                <span className="text-brand-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p className="mt-4 text-surface-200 leading-relaxed border-t border-surface-800 pt-4">{item.answer}</p>
             </details>
           ))}
         </div>
