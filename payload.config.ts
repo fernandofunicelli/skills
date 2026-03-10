@@ -14,19 +14,22 @@ import { GlobalSeo } from './payload/globals/GlobalSeo'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const runtimeDbUri = process.env['DATABASE_URI'] || process.env.DATABASE_URI || '';
-console.log('--- SYSTEM BOOT ---');
-console.log('DATABASE_URI value length:', runtimeDbUri ? runtimeDbUri.length : 'EMPTY/UNDEFINED');
-console.log('-------------------');
+// Truque anti-Webpack/Turbopack:
+// O bundler do Next.js substitui process.env.X por o valor literal durante o build.
+// Para forçar a leitura REAL em runtime, usamos acesso dinâmico via variável.
+const envKey = 'DATABASE_URI'
+const secretKey = 'PAYLOAD_SECRET'
+const getEnv = (key: string) => process.env[key]
 
 export default buildConfig({
     editor: lexicalEditor(),
     collections: [Users, Products, LandingPages, SeoPages, Media],
     globals: [GlobalSeo],
-    secret: process.env['PAYLOAD_SECRET'] || 'sua-super-chave-secreta',
+    secret: getEnv(secretKey) || 'sua-super-chave-secreta',
     db: postgresAdapter({
         pool: {
-            connectionString: runtimeDbUri,
+            connectionString: getEnv(envKey) || '',
         },
+        prodMigrations: [],
     }),
 })
