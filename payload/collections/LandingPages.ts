@@ -151,6 +151,37 @@ const CustomHtmlBlock: Block = {
     ],
 }
 
+const PricingBlock: Block = {
+    slug: 'pricing_section',
+    labels: { singular: 'Seção de Preços (Premium)', plural: 'Seções de Preços' },
+    fields: [
+        { name: 'title', type: 'text', defaultValue: 'Pré-pago. Como deveria ser.' },
+        { name: 'subtitle', type: 'text', defaultValue: 'Assine, use e renove se quiser. Simples assim.' },
+        {
+            name: 'plans',
+            type: 'array',
+            required: true,
+            minRows: 1,
+            fields: [
+                { name: 'name', type: 'text', required: true, admin: { description: 'Ex: Mensal' } },
+                { name: 'price', type: 'number', required: true, admin: { description: 'Ex: 29.90' } },
+                { name: 'currency', type: 'text', defaultValue: 'R$' },
+                { name: 'period', type: 'text', required: true, admin: { description: 'Ex: mês' } },
+                { name: 'highlight', type: 'text' },
+                { name: 'savings', type: 'text', admin: { description: 'Ex: Mais Popular ou Economize' } },
+                { name: 'features', type: 'array', fields: [{ name: 'text', type: 'text' }] },
+                { name: 'buttonText', type: 'text', required: true },
+                { name: 'buttonLink', type: 'text', required: true },
+                { name: 'isPopular', type: 'checkbox', defaultValue: false },
+            ],
+        },
+        { name: 'trial_title', type: 'text', defaultValue: 'Ainda em dúvida? Faça um teste real.' },
+        { name: 'trial_subtitle', type: 'text', defaultValue: 'Liberação completa por 3 horas por apenas R$ 4,90.' },
+        { name: 'trial_button_text', type: 'text', defaultValue: 'Liberar Teste Agora' },
+        { name: 'trial_button_link', type: 'text' },
+    ],
+}
+
 export const LandingPages: CollectionConfig = {
     slug: 'landing-pages',
     admin: {
@@ -182,7 +213,7 @@ export const LandingPages: CollectionConfig = {
                         {
                             name: 'body_sections',
                             type: 'blocks',
-                            blocks: [HeroBlock, ProblemBlock, BenefitsBlock, VideoBlock, TestimonialsBlock, SocialProofBlock, OfferBlock, GuaranteeBlock, UrgencyCtaBlock, FaqBlock, MediaLogosBlock, ContentBlock, ComparisonBlock, CustomHtmlBlock],
+                            blocks: [HeroBlock, ProblemBlock, BenefitsBlock, VideoBlock, TestimonialsBlock, SocialProofBlock, OfferBlock, GuaranteeBlock, UrgencyCtaBlock, FaqBlock, MediaLogosBlock, ContentBlock, ComparisonBlock, CustomHtmlBlock, PricingBlock],
                         },
                     ],
                 },

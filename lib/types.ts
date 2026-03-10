@@ -163,7 +163,8 @@ export type LpDynamicZone =
   | LpMediaLogos
   | LpContentBlock
   | LpComparisonTable
-  | LpCustomHtml;
+  | LpCustomHtml
+  | LpPricingSection;
 
 export interface LpHeroSection {
   __component: 'lp.hero-section';
@@ -309,6 +310,32 @@ export interface LpCustomHtml {
   id: number;
   html_content: string;
   cta_text?: string;
+}
+
+export interface PricingPlan {
+  name: string;
+  price: number;
+  currency?: string;
+  period: string;
+  highlight?: string;
+  savings?: string;
+  features: string[];
+  buttonText: string;
+  buttonLink: string;
+  isPopular?: boolean;
+}
+
+export interface LpPricingSection {
+  __component?: 'lp.pricing-section';
+  blockType?: 'pricing_section';
+  id?: number | string;
+  title?: string;
+  subtitle?: string;
+  plans: PricingPlan[];
+  trial_title?: string;
+  trial_subtitle?: string;
+  trial_button_text?: string;
+  trial_button_link?: string;
 }
 
 // ── GLOBAL SEO ──

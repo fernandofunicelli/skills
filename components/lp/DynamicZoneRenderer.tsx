@@ -11,6 +11,7 @@ import { LpSocialProof } from './LpSocialProof';
 import { LpMediaLogos } from './LpMediaLogos';
 import { LpContent } from './LpContent';
 import { LpComparison } from './LpComparison';
+import { LpPricing } from './LpPricing';
 
 // ── COMPONENTES INLINE (simples, sem arquivo separado) ──
 
@@ -219,6 +220,7 @@ const componentMap: Record<string, any> = {
   'contentBlock': LpContent,
   'comparisonTable': LpComparison,
   'customHtml': LpCustomHtml,
+  'pricing_section': LpPricing,
 };
 
 // ── RENDERER ──
