@@ -21,7 +21,7 @@ export default buildConfig({
     secret: process.env.PAYLOAD_SECRET || 'sua-super-chave-secreta',
     db: postgresAdapter({
         pool: {
-            connectionString: process.env.DATABASE_URI || 'postgresql://postgres:postgres@localhost:5432/brazapp',
+            connectionString: process.env.DATABASE_URI || '',
         },
     }),
 })
