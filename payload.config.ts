@@ -45,6 +45,7 @@ export default buildConfig({
     globals: [GlobalSeo],
     secret: process.env.PAYLOAD_SECRET || process.env.PAYLOAD_SECRET_KEY || 'sua-super-chave-secreta',
     db: postgresAdapter({
+        push: true,
         pool: {
             connectionString: dbUrl,
         },
