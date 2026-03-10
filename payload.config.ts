@@ -14,14 +14,19 @@ import { GlobalSeo } from './payload/globals/GlobalSeo'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const runtimeDbUri = process.env['DATABASE_URI'] || process.env.DATABASE_URI || '';
+console.log('--- SYSTEM BOOT ---');
+console.log('DATABASE_URI value length:', runtimeDbUri ? runtimeDbUri.length : 'EMPTY/UNDEFINED');
+console.log('-------------------');
+
 export default buildConfig({
     editor: lexicalEditor(),
     collections: [Users, Products, LandingPages, SeoPages, Media],
     globals: [GlobalSeo],
-    secret: process.env.PAYLOAD_SECRET || 'sua-super-chave-secreta',
+    secret: process.env['PAYLOAD_SECRET'] || 'sua-super-chave-secreta',
     db: postgresAdapter({
         pool: {
-            connectionString: process.env.DATABASE_URI || '',
+            connectionString: runtimeDbUri,
         },
     }),
 })
