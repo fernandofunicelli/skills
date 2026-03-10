@@ -16,13 +16,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Environment variables needed during buildtime
-ARG DATABASE_URI
-ARG PAYLOAD_SECRET
+# NEXT_PUBLIC variables MUST be present at build time to be inlined in the client bundle
 ARG NEXT_PUBLIC_SERVER_URL
-
-ENV DATABASE_URI=$DATABASE_URI
-ENV PAYLOAD_SECRET=$PAYLOAD_SECRET
 ENV NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL
 
 # Next.js telemetry is disabled
