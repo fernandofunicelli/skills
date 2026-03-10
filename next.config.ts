@@ -6,6 +6,16 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  serverExternalPackages: [
+    'fs',
+    'path',
+    'child_process',
+    'crypto',
+    'dns',
+    'pg',
+    'pg-pool',
+    '@payloadcms/db-postgres',
+  ],
   images: {
     remotePatterns: [
       {
