@@ -32,7 +32,7 @@ export default function LpLayout({
   return (
     <html lang="pt-BR" className="scroll-smooth">
       <head>
-        {gtmId && <GtmScript gtmId={gtmId} />}
+        {Boolean(gtmId) && <GtmScript gtmId={gtmId} />}
       </head>
       <body className={`${inter.variable} ${plusJakarta.variable} antialiased`}>
         {children}

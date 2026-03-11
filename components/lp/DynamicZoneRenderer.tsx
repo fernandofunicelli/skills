@@ -21,7 +21,7 @@ function LpProblem({ data, product, landingPage }: any) {
     <div className="py-20 bg-background-dark text-white">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-4xl font-black text-center mb-6" dangerouslySetInnerHTML={{ __html: data.headline.replace(/O conteúdo não\./g, '<span class="text-primary">O conteúdo não.</span>') }} />
-        {data.transition_text && <p className="text-slate-300 text-center max-w-3xl mx-auto mb-12 text-lg">{data.transition_text}</p>}
+        {data.transition_text && <p className="text-slate-300 text-center max-w-3xl mx-auto mb-12 text-lg">{typeof data.transition_text === 'string' ? data.transition_text : data.transition_text?.text || data.transition_text?.label || ''}</p>}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {data.pain_points?.map((point: any, i: number) => (
