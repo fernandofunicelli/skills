@@ -14,9 +14,9 @@ import { Metadata } from 'next';
 import { formatPrice } from '@/lib/utils';
 
 interface LpPageProps {
-  params: {
+  params: Promise<{
     'lp-slug': string;
-  };
+  }>;
 }
 
 // Force dynamic (SSR, sem cache)
@@ -25,7 +25,7 @@ export const revalidate = 0;
 
 // Metadata
 export async function generateMetadata({ params }: LpPageProps): Promise<Metadata> {
-  const lpSlug = params['lp-slug'];
+  const { 'lp-slug': lpSlug } = await params;
   const landingPage = await getLandingPageBySlug(lpSlug);
 
   if (!landingPage) {
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: LpPageProps): Promise<Metadat
 }
 
 export default async function LpPage({ params }: LpPageProps) {
-  const lpSlug = params['lp-slug'];
+  const { 'lp-slug': lpSlug } = await params;
 
   // Buscar Landing Page
   const landingPage = await getLandingPageBySlug(lpSlug);

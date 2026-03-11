@@ -4,6 +4,12 @@ export const SeoPages: CollectionConfig = {
     slug: 'seo-pages',
     admin: {
         useAsTitle: 'h1',
+        preview: (doc) => {
+            if (doc?.slug) {
+                return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/s/${doc.slug}?preview=true`;
+            }
+            return null;
+        },
     },
     access: {
         read: () => true,

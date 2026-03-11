@@ -196,6 +196,12 @@ export const LandingPages: CollectionConfig = {
     slug: 'landing-pages',
     admin: {
         useAsTitle: 'slug',
+        preview: (doc) => {
+            if (doc?.slug) {
+                return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/lp/${doc.slug}?preview=true`;
+            }
+            return null;
+        },
     },
     access: {
         read: () => true,

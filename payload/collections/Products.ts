@@ -4,6 +4,12 @@ export const Products: CollectionConfig = {
     slug: 'products',
     admin: {
         useAsTitle: 'name',
+        preview: (doc) => {
+            if (doc?.slug) {
+                return `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/${doc.slug}?preview=true`;
+            }
+            return null;
+        },
     },
     fields: [
         {
