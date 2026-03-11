@@ -1,42 +1,42 @@
-// ============================================
-// LP LAYOUT - Layout para Landing Pages
-// Header minimal + Footer minimal
-// ============================================
+import type { Metadata } from 'next';
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import '../globals.css';
+import { GtmScript } from '@/components/tracking/GtmScript';
 
-import { ReactNode } from 'react';
+const inter = Inter({
+  variable: '--font-inter',
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+});
 
-interface LpLayoutProps {
-  children: ReactNode;
-}
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: '--font-plus-jakarta',
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+});
 
-export default function LpLayout({ children }: LpLayoutProps) {
+export const metadata: Metadata = {
+  title: 'Landing Page',
+  description: 'Sistema de vendas de alta conversão',
+};
+
+export default function LpLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
+
   return (
-    <>
-      {/* Header minimal (sem navegação) */}
-      <header className="py-4 border-b border-surface-200">
-        <div className="container-custom">
-          {/* Logo sem link */}
-          <div className="text-h3 font-heading text-brand-600">Logo</div>
-        </div>
-      </header>
-
-      {/* Conteúdo da LP */}
-      {children}
-
-      {/* Footer minimal */}
-      <footer className="bg-surface-900 text-surface-400 py-8">
-        <div className="container-custom text-center text-body-sm">
-          <p>© 2026 Ecossistema de Vendas | CNPJ: 00.000.000/0000-00</p>
-          <div className="mt-2 space-x-4">
-            <a href="/termos" className="hover:text-white">
-              Termos de Uso
-            </a>
-            <a href="/privacidade" className="hover:text-white">
-              Política de Privacidade
-            </a>
-          </div>
-        </div>
-      </footer>
-    </>
+    <html lang="pt-BR" className="scroll-smooth">
+      <head>
+        {gtmId && <GtmScript gtmId={gtmId} />}
+      </head>
+      <body className={`${inter.variable} ${plusJakarta.variable} antialiased`}>
+        {children}
+      </body>
+    </html>
   );
 }

@@ -1,42 +1,14 @@
-import type { Metadata } from 'next';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
-import './globals.css';
-import { GtmScript } from '@/components/tracking/GtmScript';
+import React from 'react'
 
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: '--font-plus-jakarta',
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-});
-
-export const metadata: Metadata = {
-  title: 'Ecossistema de Vendas',
-  description: 'Sistema de vendas de alta conversão',
-};
+// Layout raiz mínimo - NÃO renderiza <html> nem <body>
+// Cada route group gerencia o seu próprio layout:
+// - (payload) -> RootLayout do Payload (com seu html/body e CSS)
+// - (main), lp, etc -> layout próprio com html/body do site
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || '';
-
-  return (
-    <html lang="pt-BR" className="scroll-smooth">
-      <head>
-        {gtmId && <GtmScript gtmId={gtmId} />}
-      </head>
-      <body className={`${inter.variable} ${plusJakarta.variable} antialiased`}>
-        {children}
-      </body>
-    </html>
-  );
+  return children;
 }
