@@ -182,6 +182,16 @@ const PricingBlock: Block = {
     ],
 }
 
+const HybridTechBlock: Block = {
+    slug: 'hybrid_tech',
+    labels: { singular: 'Tecnologia Hybrid Stream', plural: 'Tecnologias Hybrid Stream' },
+    fields: [
+        { name: 'headline', type: 'text', admin: { description: 'Exemplo: Enquanto outros dependem...' } },
+        { name: 'sub_headline', type: 'textarea' },
+    ],
+}
+
+
 export const LandingPages: CollectionConfig = {
     slug: 'landing-pages',
     admin: {
@@ -213,7 +223,7 @@ export const LandingPages: CollectionConfig = {
                         {
                             name: 'body_sections',
                             type: 'blocks',
-                            blocks: [HeroBlock, ProblemBlock, BenefitsBlock, VideoBlock, TestimonialsBlock, SocialProofBlock, OfferBlock, GuaranteeBlock, UrgencyCtaBlock, FaqBlock, MediaLogosBlock, ContentBlock, ComparisonBlock, CustomHtmlBlock, PricingBlock],
+                            blocks: [HeroBlock, ProblemBlock, BenefitsBlock, VideoBlock, TestimonialsBlock, SocialProofBlock, OfferBlock, GuaranteeBlock, UrgencyCtaBlock, FaqBlock, MediaLogosBlock, ContentBlock, ComparisonBlock, CustomHtmlBlock, PricingBlock, HybridTechBlock],
                         },
                     ],
                 },
