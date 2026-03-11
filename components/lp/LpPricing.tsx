@@ -8,7 +8,7 @@ export interface PricingPlan {
     period: string;
     highlight?: string;
     savings?: string;
-    features: string[];
+    features: { id?: string; text: string }[];
     buttonText: string;
     buttonLink: string;
     isPopular?: boolean;
@@ -82,7 +82,7 @@ export function LpPricing({ data }: LpPricingProps) {
                                 {plan.features.map((feature, idx) => (
                                     <li key={idx} className="flex items-center gap-2">
                                         <span className="material-symbols-outlined text-primary text-sm">check</span>
-                                        <span>{feature}</span>
+                                        <span>{feature.text}</span>
                                     </li>
                                 ))}
                             </ul>

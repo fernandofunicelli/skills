@@ -27,7 +27,7 @@ function LpProblem({ data, product, landingPage }: any) {
           {data.pain_points?.map((point: any, i: number) => (
             <div key={i} className="p-6 bg-white/5 border-l-4 border-primary rounded-r-xl">
               <svg className="w-8 h-8 text-primary mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
-              <h3 className="font-bold text-lg mb-2 text-white">{point.label}</h3>
+              <h3 className="font-bold text-lg mb-2 text-white">{point.text || point.label}</h3>
             </div>
           ))}
         </div>
@@ -53,7 +53,7 @@ function LpBenefits({ data, product, landingPage }: any) {
               <div className="p-8">
                 <div className="flex items-center gap-3 mb-4">
                   <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" /></svg>
-                  <h3 className="text-2xl font-bold text-white">{item.label}</h3>
+                  <h3 className="text-2xl font-bold text-white">{item.title || item.label}</h3>
                 </div>
                 <p className="text-slate-400 leading-relaxed">
                   {item.description}
@@ -116,7 +116,7 @@ function LpOfferStack({ data, product, landingPage }: any) {
               Recomendado
             </div>
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-white mb-2">{data.items?.[0]?.label || 'Premium'}</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">{data.items?.[0]?.name || data.items?.[0]?.label || 'Premium'}</h3>
               <div className="flex justify-center items-end gap-1 mb-2">
                 <span className="text-5xl font-black text-white">{data.actual_price}</span>
               </div>
@@ -127,7 +127,7 @@ function LpOfferStack({ data, product, landingPage }: any) {
               {data.items?.slice(1).map((item: any, i: number) => (
                 <div key={i} className="flex items-center gap-3">
                   <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                  <span className="text-slate-300">{item.label} {item.description && <span className="font-bold text-primary ml-1">{item.description}</span>}</span>
+                  <span className="text-slate-300">{item.name || item.label} {item.value_label && <span className="font-bold text-primary ml-1">{item.value_label}</span>} {item.description && <span className="font-bold text-primary ml-1">{item.description}</span>}</span>
                 </div>
               ))}
             </div>
