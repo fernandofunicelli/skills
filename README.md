@@ -1,28 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💎 Diamond Intelligence Library (Antigravity & Claude Code)
 
-## Executando Localmente
-1. Configure seu `.env.local`
-2. Instale dependências: `npm install`
-3. Rode as migrações/inicie o dev: `npm run dev`
+Este diretório é uma biblioteca pura de inteligência e governança para agentes de IA (Antigravity e Claude Code), baseada na estratégia de **Pilares de Diamante**.
 
-Painel Admin estará disponível em: `http://localhost:3000/admin`
-Landing Pages na rota: `http://localhost:3000/lp/seu-slug`
+## 📖 Como usar esta Biblioteca
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Invocação de Skills (Orquestração)
+O ecossistema está configurado para que o agente invoque sempre o pilar fundamental:
+- **Pilar Central:** `00-DIAMOND-CORE-INTELLIGENCE`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. Os 7 Pilares de Diamante (Diamond Depth)
+As habilidades estão organizadas em 7 arquivos mestres de estratégia que apontam para módulos técnicos detalhados:
 
-## Learn More
+1.  **00-Agentes-Orquestracao:** O Cérebro (Orquestração, Memória, Engenharia de Skills).
+2.  **01-02-Produto-Agilidade:** A Estratégia (Discovery, Growth, Agile Delivery).
+3.  **03-04-Arquitetura-Sistemas:** A Estrutura (DDD, Design Systems, UX/UI).
+4.  **05-06-Backend-API:** O Motor (API, DBOS, Agentic AI, RAG).
+5.  **07-08-Seguranca-Privacidade:** O Escudo (Cybersecurity, DevOps, SRE/QA).
+6.  **09-11-Conteudo-Documentacao:** A Atração (Copywriting, Growth Marketing, Scraping).
+7.  **12-14-CMS-Plataformas:** As Ferramentas (WP, Firebase, Linguagens Pro).
 
-To learn more about Next.js, take a look at the following resources:
+## 🛡️ Regras de Governança
+- **[AGENTS.md](file:///c:/Users/ferna/Downloads/Projetos/Sites_p2p_tv_conteudo/AGENTS.md):** Regras de operação Diamond Standard (Orquestração -> Planejamento -> Execução -> Verificação).
+- **[.claude/skills/skill-rules.json](file:///c:/Users/ferna/Downloads/Projetos/Sites_p2p_tv_conteudo/.claude/skills/skill-rules.json):** Regras de ativação automática para o Claude Code.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Propósito
+Esta biblioteca foi projetada para ser copiada e colada em qualquer novo projeto de software, provendo instantaneamente uma inteligência de elite para o seu assistente de IA.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+**Status: DIAMOND LIBRARY OPERACIONAL** 💎📚🏅

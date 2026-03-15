@@ -1,0 +1,65 @@
+{
+  "00-DIAMOND-CORE-INTELLIGENCE": {
+    "type": "guardrail",
+    "enforcement": "block",
+    "priority": "critical",
+    "promptTriggers": {
+      "keywords": ["orchestrate", "multi-agent", "memory", "mcp", "complex task", "plan", "architecture", "bug", "error", "fix", "debugging", "skills", "agents.md", "andruia"],
+      "intentPatterns": ["(orchestrate|plan|debug|fix|create|improve).*?"]
+    }
+  },
+  "01-02-PRODUCT-BUSINESS-OPERATIONS": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": ["discovery", "shaping", "strategy", "roadmap", "jtbd", "growth", "operations", "logistics", "monetization", "okr", "rice"],
+      "intentPatterns": ["(discovery|strategy|growth|operations).*?"]
+    }
+  },
+  "03-04-SYSTEMS-DESIGN-ARCHITECTURE": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": ["ddd", "clean arch", "solid", "design system", "atomic", "stitch", "ux", "ui", "motion"],
+      "intentPatterns": ["(architecture|design|stitch).*?"]
+    }
+  },
+  "05-06-INTELLIGENT-BACKEND-AI-ENGINE": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": ["api", "auth", "prisma", "drizzle", "dbos", "stripe", "agent", "crewai", "langgraph", "rag", "search"],
+      "intentPatterns": ["(backend|api|ai|agent|rag).*?"]
+    }
+  },
+  "07-08-CYBER-INFRA-RELIABILITY": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": ["security", "pentest", "compliance", "gdpr", "docker", "k8s", "ci/cd", "sre", "observability", "qa", "test"],
+      "intentPatterns": ["(security|infra|devops|sre|qa).*?"]
+    }
+  },
+  "09-11-CONTENT-GROWTH-SCRAPING": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": ["copy", "writing", "onboarding", "seo", "aso", "ads", "scraping", "playwright", "firecrawl"],
+      "intentPatterns": ["(content|marketing|scraping).*?"]
+    }
+  },
+  "12-14-PLATFORMS-NICHE-UTILITIES": {
+    "type": "domain",
+    "enforcement": "suggest",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": ["wordpress", "firebase", "niche", "juridico", "saude", "erp", "git", "bash", "js", "ts", "python"],
+      "intentPatterns": ["(platform|niche|language|js|ts|python|git).*?"]
+    }
+  }
+}
