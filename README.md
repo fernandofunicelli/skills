@@ -2,9 +2,29 @@
 
 Este diretório é uma biblioteca pura de inteligência e governança para agentes de IA (Antigravity e Claude Code), baseada na estratégia de **Pilares de Diamante**.
 
-## 📖 Como usar esta Biblioteca
+## 🚀 Setup Rápido (Quick Start)
 
-### 1. Invocação de Skills (Orquestração)
+Para instalar esta inteligência em um novo projeto, siga um dos caminhos abaixo:
+
+### Caminho Automático (Windows PowerShell)
+1. Clone este repositório.
+2. Execute o script de setup apontando para o seu novo projeto:
+   ```powershell
+   ./setup-diamond.ps1 -TargetDir "C:\Caminho\Para\Seu\Projeto"
+   ```
+
+### Caminho Manual
+1. Copie a pasta `skills/` para o root do seu projeto.
+2. Copie o arquivo `AGENTS.md` para o root do seu projeto.
+3. Copie a pasta `.claude/` para o root do seu projeto (necessário para Claude Code).
+
+## 🤖 Como Ativar a Inteligência
+Após copiar os arquivos, envie a seguinte mensagem para o Agente (Antigravity ou Claude):
+> "Leia o arquivo `AGENTS.md` e siga as regras de governança e orquestração baseadas nos Pilares de Diamante."
+
+---
+
+## 📖 Estrutura da Biblioteca
 O ecossistema está configurado para que o agente invoque sempre o pilar fundamental:
 - **Pilar Central:** `00-DIAMOND-CORE-INTELLIGENCE`
 
